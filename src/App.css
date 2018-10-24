@@ -1,5 +1,49 @@
 @import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
-body{
+body {
   background-color: #FAFAFC;
+  font-family: 'Rubik';
+}
+
+a {
+  cursor: pointer;
+}
+
+.effect-input {
+  border: 0;
+  padding: 4px 0;
+  border-bottom: 1px solid #ccc;
+  background-color: transparent;
+}
+
+.input-effect {
+  position: relative;
+  z-index: 0;
+}
+
+.input-effect input {
+  color: #333;
+  width: 100%;
+  box-sizing: border-box;
+  letter-spacing: 1px;
+}
+
+.input-effect input:focus {
+  outline: none;
+}
+
+.input-effect .effect-input~.focus-border {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 2px;
+  background-color: #4caf50;
+  transition: 0.4s;
+}
+
+.input-effect .effect-input:focus~.focus-border {
+  width: 100%;
+  transition: 0.4s;
+  left: 0;
 }
