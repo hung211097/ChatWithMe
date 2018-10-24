@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './index.css';
+import './index.scss';
 import Logo from '../../images/logoLarge.png'
 
 class Login extends Component {
