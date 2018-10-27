@@ -4,7 +4,7 @@ import Logo from '../../images/logoLarge.png'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import {register} from '../../actions'
-import {firestoreConnect} from 'react-redux-firebase'
+import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
 import { Link } from 'react-router-dom'
 
@@ -78,6 +78,7 @@ class Register extends Component {
   }
 
   render() {
+    console.log(this.props);
     return (
       <div className={styles.registerPage}>
         <div className="well-logo">
@@ -142,8 +143,6 @@ class Register extends Component {
 export default withRouter(
   compose(
     connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect([
-      {collection: 'users'}
-    ])
+    withFirestore
   )(Register)
 );

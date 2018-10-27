@@ -1,0 +1,32 @@
+import {actionTypes} from '../constants/actionType'
+
+const initialState = {
+  auth_status: null
+}
+
+export default (state = initialState, action) => {
+  switch(action.type){
+    case actionTypes.LOGIN_FAILED:
+      return{
+        ...state,
+        auth_status: 'failed'
+      }
+    case actionTypes.LOGIN_SUCCESS:
+      return{
+        ...state,
+        auth_status: 'success'
+      }
+    case actionTypes.LOGOUT:
+      return{
+        ...state,
+        auth_status: 'out'
+      }
+    case actionTypes.CHANGE_STATUS:
+      return{
+        ...state,
+        auth_status: action.status
+      }
+    default:
+      return state
+  }
+}

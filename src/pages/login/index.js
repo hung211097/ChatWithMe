@@ -3,35 +3,47 @@ import styles from './index.scss';
 import Logo from '../../images/logoLarge.png'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import {login} from '../../actions'
-import {firestoreConnect} from 'react-redux-firebase'
-import {compose} from 'redux'
+import { login, changStatus, logout } from '../../actions'
+import { Redirect } from 'react-router-dom'
+import {firebaseConnect} from 'react-redux-firebase'
+// import {compose} from 'redux'
 import { Link } from 'react-router-dom'
+import PropTypes from 'prop-types'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    login: (user) => dispatch(login(user))
+    login: (user) => dispatch(login(user)),
+    changeStatus: (status) => dispatch(changStatus(status)),
+    logout: () => dispatch(logout())
   }
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
-  return{}
+  return{
+    auth_status: state.auth.auth_status,
+    isLogged: state.firebase.auth.isEmpty
+  }
 }
 
 class Login extends Component {
+  static propTypes = {
+    auth_status: PropTypes.string,
+    login: PropTypes.func,
+    changeStatus: PropTypes.func
+  }
+
   constructor(props){
     super(props)
     this.state = {
       username: '',
       password: '',
-      isSubmit: false,
-      isError: false,
+      isSubmit: false
     }
   }
 
   handleSubmit(e){
     e.preventDefault()
+    // this.props.logout()
     this.setState({
       isSubmit: true
     })
@@ -52,15 +64,24 @@ class Login extends Component {
     this.setState({
       username: e.target.value
     })
+    if(this.props.auth_status !== null){
+      this.props.changeStatus(null)
+    }
   }
 
   handleChangePassword(e){
     this.setState({
       password: e.target.value
     })
+    if(this.props.auth_status !== null){
+      this.props.changeStatus(null)
+    }
   }
 
   render() {
+    if(this.props.auth_status === 'success' || !this.props.isLogged){
+      return <Redirect to='/' />
+    }
     return (
       <div className={styles.loginPage}>
         <div className="well-logo">
@@ -93,6 +114,9 @@ class Login extends Component {
             <div className="loggin">
               <button className="btn btn-primary" type="submit" onClick={this.handleSubmit.bind(this)}>Sign in</button>
               <p>You don't have an account, <Link to='/register'>Sign up here</Link></p>
+              {this.state.isSubmit && this.props.auth_status === 'failed' &&
+                <p className="error">Sai tài khoản hoặc mật khẩu</p>
+              }
             </div>
           </form>
         </div>
@@ -101,11 +125,4 @@ class Login extends Component {
   }
 }
 
-export default withRouter(
-  compose(
-    connect(mapStateToProps, mapDispatchToProps),
-    firestoreConnect([
-      {collection: 'users'}
-    ])
-  )(Login)
-);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
