@@ -1,32 +1,33 @@
 import React, { Component } from 'react';
-import styles from './index.scss';
+import styles from'./index.scss';
 import Logo from '../../images/logoLarge.png'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import {login} from '../../actions'
+import {register} from '../../actions'
 import {firestoreConnect} from 'react-redux-firebase'
 import {compose} from 'redux'
 import { Link } from 'react-router-dom'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    login: (user) => dispatch(login(user))
+    register: (user) => dispatch(register(user))
   }
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return{}
 }
 
-class Login extends Component {
+class Register extends Component {
   constructor(props){
     super(props)
     this.state = {
       username: '',
       password: '',
+      confirmPass: '',
+      email: '',
       isSubmit: false,
-      isError: false,
+      isError: false
     }
   }
 
@@ -42,7 +43,11 @@ class Login extends Component {
   }
 
   validate(){
-    if(this.state.username === '' || this.state.password === ''){
+    if(this.state.username === '' || this.state.password === '' || this.state.confirmPass === '' || this.state.email === ''){
+      return false
+    }
+
+    if(this.state.password !== this.state.confirmPass){
       return false
     }
     return true
@@ -60,9 +65,21 @@ class Login extends Component {
     })
   }
 
+  handleChangeConfirmPassword(e){
+    this.setState({
+      confirmPass: e.target.value
+    })
+  }
+
+  handleChangeEmail(e){
+    this.setState({
+      email: e.target.value
+    })
+  }
+
   render() {
     return (
-      <div className={styles.loginPage}>
+      <div className={styles.registerPage}>
         <div className="well-logo">
           <div className="slogan">
             <img src={Logo} alt="logo" />
@@ -70,7 +87,7 @@ class Login extends Component {
           </div>
         </div>
         <div className="form-login">
-          <h2>Sign In</h2>
+          <h2>Sign Up</h2>
           <form onSubmit={this.handleSubmit.bind(this)}>
             <div className="field">
               <div className="input-effect">
@@ -83,6 +100,15 @@ class Login extends Component {
             </div>
             <div className="field">
               <div className="input-effect">
+                <input className="effect-input" type="text" placeholder="Email" onChange={this.handleChangeEmail.bind(this)}/>
+                <span className="focus-border"></span>
+              </div>
+              {this.state.isSubmit && !this.state.email &&
+                <p className="error">Hãy điền thông tin vào đây!</p>
+              }
+            </div>
+            <div className="field">
+              <div className="input-effect">
                 <input className="effect-input" type="password" placeholder="Password" onChange={this.handleChangePassword.bind(this)}/>
                 <span className="focus-border"></span>
               </div>
@@ -90,9 +116,21 @@ class Login extends Component {
                 <p className="error">Hãy điền thông tin vào đây!</p>
               }
             </div>
+            <div className="field">
+              <div className="input-effect">
+                <input className="effect-input" type="password" placeholder="Confirm Password" onChange={this.handleChangeConfirmPassword.bind(this)}/>
+                <span className="focus-border"></span>
+              </div>
+              {this.state.isSubmit && !this.state.confirmPass &&
+                <p className="error">Hãy điền thông tin vào đây!</p>
+              }
+              {this.state.isSubmit && this.state.password !== this.state.confirmPass && this.state.confirmPass &&
+                <p className="error">Mật khẩu xác nhận chưa khớp!</p>
+              }
+            </div>
             <div className="loggin">
-              <button className="btn btn-primary" type="submit" onClick={this.handleSubmit.bind(this)}>Sign in</button>
-              <p>You don't have an account, <Link to='/register'>Sign up here</Link></p>
+              <button className="btn btn-primary" type="submit" onClick={this.handleSubmit.bind(this)}>Sign up</button>
+              <p>You've already an account, <Link to='/login'>Sign in here</Link></p>
             </div>
           </form>
         </div>
@@ -107,5 +145,5 @@ export default withRouter(
     firestoreConnect([
       {collection: 'users'}
     ])
-  )(Login)
+  )(Register)
 );

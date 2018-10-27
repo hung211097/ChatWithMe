@@ -10,3 +10,14 @@ export const login = (user) => {
     dispatch({type: actionTypes.LOGIN, user: user})
   }
 }
+
+export const register = (user) => {
+  return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const firestore = getFirestore();
+    console.log(firestore);
+    firestore.collection('user').get().then((data) => {
+      console.log("DATA", data);
+    })
+    dispatch({type: actionTypes.REGISTER, user: user})
+  }
+}

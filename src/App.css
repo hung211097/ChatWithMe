@@ -2,7 +2,6 @@
 
 body {
   background-color: #FAFAFC;
-  font-family: 'Rubik';
 }
 
 a {
@@ -46,4 +45,9 @@ a {
   width: 100%;
   transition: 0.4s;
   left: 0;
+}
+
+.error{
+  color: red;
+  
 }
