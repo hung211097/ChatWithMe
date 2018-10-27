@@ -49,5 +49,20 @@ a {
 
 .error{
   color: red;
-  
+}
+
+.sweet-alert{
+  width: 30% !important;
+  margin: auto !important;
+  top: 20% !important;
+  left: 35% !important;
+}
+
+@media screen and (max-width: 576px){
+  .sweet-alert{
+    width: 90% !important;
+    margin: auto !important;
+    top: 22% !important;
+    left: 5% !important;
+  }
 }

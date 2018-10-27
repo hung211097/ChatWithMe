@@ -5,7 +5,7 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { login, changStatus, logout } from '../../actions'
 import { Redirect } from 'react-router-dom'
-import {firebaseConnect} from 'react-redux-firebase'
+// import {firebaseConnect} from 'react-redux-firebase'
 // import {compose} from 'redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -21,13 +21,14 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   return{
     auth_status: state.auth.auth_status,
-    isLogged: state.firebase.auth.isEmpty
+    notLogged: state.firebase.auth.isEmpty
   }
 }
 
 class Login extends Component {
   static propTypes = {
     auth_status: PropTypes.string,
+    notLogged: PropTypes.bool,
     login: PropTypes.func,
     changeStatus: PropTypes.func
   }
@@ -43,7 +44,6 @@ class Login extends Component {
 
   handleSubmit(e){
     e.preventDefault()
-    // this.props.logout()
     this.setState({
       isSubmit: true
     })
@@ -79,7 +79,7 @@ class Login extends Component {
   }
 
   render() {
-    if(this.props.auth_status === 'success' || !this.props.isLogged){
+    if(this.props.auth_status === 'success' || !this.props.notLogged){
       return <Redirect to='/' />
     }
     return (
@@ -95,7 +95,7 @@ class Login extends Component {
           <form onSubmit={this.handleSubmit.bind(this)}>
             <div className="field">
               <div className="input-effect">
-                <input className="effect-input" type="text" placeholder="Username" onChange={this.handleChangeUsername.bind(this)}/>
+                <input className="effect-input" name="username" type="text" placeholder="Username" onChange={this.handleChangeUsername.bind(this)}/>
                 <span className="focus-border"></span>
               </div>
               {this.state.isSubmit && !this.state.username &&
