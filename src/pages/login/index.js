@@ -4,12 +4,14 @@ import Logo from '../../images/logoLarge.png'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { login, changStatus, logout } from '../../actions'
-import { Redirect } from 'react-router-dom'
 // import {firebaseConnect} from 'react-redux-firebase'
 // import {compose} from 'redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { loadItem } from '../../services/localStorage.services'
+import {googlePlus} from 'react-icons-kit/fa/googlePlus'
+import { Icon } from 'react-icons-kit'
+import { accountStatus } from '../../constants/localStorage'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -20,6 +22,7 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
+  console.log(state);
   return{
     auth_status: state.auth.auth_status,
     notLogged: state.firebase.auth.isEmpty
@@ -40,6 +43,12 @@ class Login extends Component {
       username: '',
       password: '',
       isSubmit: false
+    }
+  }
+
+  componentDidMount(){
+    if(loadItem('account_status') === accountStatus.LOGGED){
+      this.props.history.push('/')
     }
   }
 
@@ -80,9 +89,6 @@ class Login extends Component {
   }
 
   render() {
-    if(loadItem('account_status') !== 'unlogged'){
-      return <Redirect to='/' />
-    }
     return (
       <div className={styles.loginPage}>
         <div className="well-logo">
@@ -114,6 +120,8 @@ class Login extends Component {
             </div>
             <div className="loggin">
               <button className="btn btn-primary" type="submit" onClick={this.handleSubmit.bind(this)}>Đăng nhập</button>
+              <button className="btn btn-google" type="button"><Icon icon={googlePlus} size={24} style={{position: 'relative', top: '-2px'}}/>
+              &nbsp;Đăng nhập với Google</button>
               <p>Bạn chưa có tài khoản, <Link to='/register'>Đăng ký ở đây</Link></p>
               {this.state.isSubmit && this.props.auth_status === 'failed' &&
                 <p className="error">Sai tài khoản hoặc mật khẩu</p>

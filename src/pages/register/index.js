@@ -11,8 +11,8 @@ import { validateEmail } from '../../services/utils.services'
 import PropTypes from 'prop-types'
 import passwordHash from 'password-hash'
 import SweetAlert from 'react-bootstrap-sweetalert';
-import { Redirect } from 'react-router-dom'
 import { loadItem } from '../../services/localStorage.services'
+import { accountStatus } from '../../constants/localStorage'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -49,6 +49,12 @@ class Register extends Component {
     }
   }
 
+  componentDidMount(){
+    if(loadItem('account_status') === accountStatus.LOGGED){
+      this.props.history.push('/')
+    }
+  }
+
   handleSubmit(e){
     e.preventDefault()
     this.setState({
@@ -63,8 +69,15 @@ class Register extends Component {
   showAlert(){
     this.setState({
       isShow: true,
-      timeout: 5000
+      // timeout: 5000
     })
+    this.timeOut = setTimeout(() => {
+      this.hideAlert()
+    }, 5000)
+  }
+
+  componentWillUnmount(){
+    this.timeOut && clearTimeout(this.timeOut)
   }
 
   validate(){
@@ -126,9 +139,6 @@ class Register extends Component {
   }
 
   render() {
-    if(loadItem('account_status') === 'logged'){
-      return <Redirect to='/' />
-    }
     return (
       <div className={styles.registerPage}>
         <div className="well-logo">
@@ -202,7 +212,6 @@ class Register extends Component {
           show={this.state.isShow}
         	onConfirm={this.hideAlert.bind(this)}
         	onCancel={this.hideAlert.bind(this)}
-          timeout={this.state.timeout}
         >
         	Bạn sẽ được chuyển về trang chủ sau 5s hoặc ngay sau khi đóng thông báo!
         </SweetAlert>

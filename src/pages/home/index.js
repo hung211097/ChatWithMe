@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { logout } from '../../actions'
 import { saveItem, loadItem } from '../../services/localStorage.services'
+import { accountStatus } from '../../constants/localStorage'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -33,11 +34,11 @@ class Register extends Component {
   }
 
   componentDidMount(){
-    if(this.props.notLogged && loadItem('account_status') === 'unlogged'){
+    if(this.props.notLogged && loadItem('account_status') === accountStatus.UNLOGGED){
       this.props.history.push('/login')
     }
     else{
-      saveItem('account_status', 'logged')
+      saveItem('account_status', accountStatus.LOGGED)
     }
   }
 

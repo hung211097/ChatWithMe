@@ -1,5 +1,4 @@
 import {actionTypes} from '../constants/actionType'
-import { ResultifyData } from '../services/utils.services'
 import passwordHash from 'password-hash'
 import { saveItem } from '../services/localStorage.services'
 
@@ -8,24 +7,22 @@ export const login = (user) => {
     const firestore = getFirestore();
     const firebase = getFirebase();
     firestore.get({collection: 'users', where: [['username', '==', user.username]]}).then((data) => {
-      let obj = null
-      obj = data.docs[0]
+      let obj = !!data.docs.length ? data.docs[0].data() : null
       // obj = obj[0]._document
       // console.log("DOCS", obj.data.internalValue.get('email'));
       // console.log(ResultifyData(obj, 'password').trim());
       // console.log(user.password);
       // console.log(passwordHash.verify(user.password, ResultifyData(obj, 'password').trim()));
-
       if(obj){  //Check password
-        if(!passwordHash.verify(user.password, ResultifyData(obj, 'password').trim())){
+        if(!passwordHash.verify(user.password, obj.password.trim())){
           dispatch({type: actionTypes.LOGIN_FAILED})
           return
         }
       }
       if(data.docs.length){
         firebase.auth().signInWithEmailAndPassword(
-          ResultifyData(obj, 'email').trim(),
-          ResultifyData(obj, 'password').trim(),
+          obj.email,
+          obj.password
         ).then(() => {
           saveItem('account_status', 'logged')
           dispatch({type: actionTypes.LOGIN_SUCCESS})
@@ -54,7 +51,7 @@ export const register = (user, callback) => {
           user.email,
           user.password
         ).then((res) => {
-          firestore.collection('users').add({
+          return firestore.collection('users').doc(res.user.uid).set({
             username: user.username.trim(),
             password: user.password.trim(),
             display_name: user.username.trim(),
@@ -62,6 +59,7 @@ export const register = (user, callback) => {
             uid: res.user.uid
           })
         }).then(() => {
+          saveItem('account_status', 'logged')
           dispatch({type: actionTypes.REGISTER_SUCCESS})
         })
         .catch(e => {

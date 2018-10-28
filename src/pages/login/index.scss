@@ -104,5 +104,24 @@
   .btn-primary{
     background: $main-color !important;
     border-color: $main-color !important;
+    transition: 0.5s ease;
+    &:focus{
+      box-shadow: none !important;
+      background: $main-color-focus !important;
+    }
+  }
+
+  .btn-google{
+    background: $google-color;
+    color: white;
+    margin-top: 20px;
+    transition: 0.5s ease;
+    @media screen and (max-width: 576px){
+      padding: 8px 20px !important;
+    }
+    &:focus{
+      box-shadow: none !important;
+      background: $google-color-focus;
+    }
   }
 }
