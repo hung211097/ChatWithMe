@@ -19,6 +19,7 @@ export default (state = initialState, action) => {
     case actionTypes.LOGOUT:
       return{
         ...state,
+        auth_status: 'out'
       }
     case actionTypes.CHANGE_STATUS:
       return{

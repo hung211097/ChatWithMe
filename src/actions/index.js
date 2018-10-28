@@ -27,6 +27,7 @@ export const login = (user) => {
           ResultifyData(obj, 'email').trim(),
           ResultifyData(obj, 'password').trim(),
         ).then(() => {
+          saveItem('account_status', 'logged')
           dispatch({type: actionTypes.LOGIN_SUCCESS})
         }).catch(err => {
           dispatch({type: actionTypes.LOGIN_FAILED})
@@ -74,12 +75,14 @@ export const register = (user, callback) => {
   }
 }
 
-export const logout = () => {
+export const logout = (redirectCallback) => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
     const firebase = getFirebase();
     firebase.auth().signOut().then(() => {
-      saveItem('account_status', null)
+      saveItem('account_status', 'unlogged')
       dispatch({type: actionTypes.LOGOUT})
+    }).then(() => {
+      redirectCallback()
     })
   }
 }

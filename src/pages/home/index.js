@@ -4,13 +4,12 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
-import { Redirect } from 'react-router-dom'
 import { logout } from '../../actions'
-import { saveItem } from '../../services/localStorage.services'
+import { saveItem, loadItem } from '../../services/localStorage.services'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    logout: () => dispatch(logout())
+    logout: (redirectCallback) => dispatch(logout(redirectCallback))
   }
 }
 
@@ -29,32 +28,26 @@ class Register extends Component {
   constructor(props){
     super(props)
     this.state = {
-      notLogged: true
+
     }
   }
 
   componentDidMount(){
-    saveItem('account_status', 'logged')
-  }
-
-  UNSAFE_componentWillReceiveProps(props){
-    if(this.state.notLogged !== props.notLogged){
-      this.setState({
-        notLogged: props.notLogged
-      })
+    if(this.props.notLogged && loadItem('account_status') === 'unlogged'){
+      this.props.history.push('/login')
     }
-    // console.log("EARLY", props);
+    else{
+      saveItem('account_status', 'logged')
+    }
   }
 
   handleLogout(){
-    this.props.logout()
-    this.props.history.push('/login')
+    this.props.logout(() => {
+      this.props.history.push('/login')
+    })
   }
 
   render() {
-    if(this.state.notLogged){
-      return <Redirect to='/login' />
-    }
     return (
       <div className={styles.homePage}>
         <button className="btn btn-primary" onClick={this.handleLogout.bind(this)}>Đăng xuất</button>

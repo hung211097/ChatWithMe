@@ -126,7 +126,7 @@ class Register extends Component {
   }
 
   render() {
-    if(!this.props.notLogged && loadItem('account_status') === 'logged'){
+    if(loadItem('account_status') === 'logged'){
       return <Redirect to='/' />
     }
     return (
@@ -138,11 +138,11 @@ class Register extends Component {
           </div>
         </div>
         <div className="form-login">
-          <h2>Sign Up</h2>
+          <h2>Đăng ký</h2>
           <form onSubmit={this.handleSubmit.bind(this)}>
             <div className="field">
               <div className="input-effect">
-                <input className="effect-input" name="username" type="text" placeholder="Username" onChange={this.handleChangeUsername.bind(this)}/>
+                <input className="effect-input" name="username" type="text" placeholder="Tài khoản" onChange={this.handleChangeUsername.bind(this)}/>
                 <span className="focus-border"></span>
               </div>
               {this.state.isSubmit && !this.state.username &&
@@ -163,7 +163,7 @@ class Register extends Component {
             </div>
             <div className="field">
               <div className="input-effect">
-                <input className="effect-input" type="password" placeholder="Password" onChange={this.handleChangePassword.bind(this)}/>
+                <input className="effect-input" type="password" placeholder="Mật khẩu" onChange={this.handleChangePassword.bind(this)}/>
                 <span className="focus-border"></span>
               </div>
               {this.state.isSubmit && !this.state.password &&
@@ -175,7 +175,7 @@ class Register extends Component {
             </div>
             <div className="field">
               <div className="input-effect">
-                <input className="effect-input" type="password" placeholder="Confirm Password" onChange={this.handleChangeConfirmPassword.bind(this)}/>
+                <input className="effect-input" type="password" placeholder="Xác nhận mật khẩu" onChange={this.handleChangeConfirmPassword.bind(this)}/>
                 <span className="focus-border"></span>
               </div>
               {this.state.isSubmit && !this.state.confirmPass &&
@@ -187,7 +187,7 @@ class Register extends Component {
             </div>
             <div className="loggin">
               <button className="btn btn-primary" type="submit" onClick={this.handleSubmit.bind(this)}>Sign up</button>
-              <p>You've already an account, <Link to='/login'>Sign in here</Link></p>
+              <p>Bạn đã có tài khoản, <Link to='/login'>Đăng nhập ở đây</Link></p>
               {this.state.isSubmit && this.props.auth_status === 'failed' &&
                 <p className="error">Tên tài khoản hoặc email đã tồn tại!</p>
               }

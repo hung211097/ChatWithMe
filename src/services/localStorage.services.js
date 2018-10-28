@@ -3,5 +3,9 @@ export function saveItem(key, value){
 }
 
 export function loadItem(key){
-  return window.localStorage.getItem(key)
+  let res = window.localStorage.getItem(key)
+  if(key === 'account_status'){
+    return res ? res : 'unlogged'
+  }
+  return res
 }

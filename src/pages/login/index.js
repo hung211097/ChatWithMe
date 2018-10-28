@@ -9,6 +9,7 @@ import { Redirect } from 'react-router-dom'
 // import {compose} from 'redux'
 import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
+import { loadItem } from '../../services/localStorage.services'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -79,7 +80,7 @@ class Login extends Component {
   }
 
   render() {
-    if(this.props.auth_status === 'success' || !this.props.notLogged){
+    if(loadItem('account_status') !== 'unlogged'){
       return <Redirect to='/' />
     }
     return (
@@ -91,11 +92,11 @@ class Login extends Component {
           </div>
         </div>
         <div className="form-login">
-          <h2>Sign In</h2>
+          <h2>Đăng nhập</h2>
           <form onSubmit={this.handleSubmit.bind(this)}>
             <div className="field">
               <div className="input-effect">
-                <input className="effect-input" name="username" type="text" placeholder="Username" onChange={this.handleChangeUsername.bind(this)}/>
+                <input className="effect-input" name="username" type="text" placeholder="Tài khoản" onChange={this.handleChangeUsername.bind(this)}/>
                 <span className="focus-border"></span>
               </div>
               {this.state.isSubmit && !this.state.username &&
@@ -104,7 +105,7 @@ class Login extends Component {
             </div>
             <div className="field">
               <div className="input-effect">
-                <input className="effect-input" type="password" placeholder="Password" onChange={this.handleChangePassword.bind(this)}/>
+                <input className="effect-input" type="password" placeholder="Mật khẩu" onChange={this.handleChangePassword.bind(this)}/>
                 <span className="focus-border"></span>
               </div>
               {this.state.isSubmit && !this.state.password &&
@@ -112,8 +113,8 @@ class Login extends Component {
               }
             </div>
             <div className="loggin">
-              <button className="btn btn-primary" type="submit" onClick={this.handleSubmit.bind(this)}>Sign in</button>
-              <p>You don't have an account, <Link to='/register'>Sign up here</Link></p>
+              <button className="btn btn-primary" type="submit" onClick={this.handleSubmit.bind(this)}>Đăng nhập</button>
+              <p>Bạn chưa có tài khoản, <Link to='/register'>Đăng ký ở đây</Link></p>
               {this.state.isSubmit && this.props.auth_status === 'failed' &&
                 <p className="error">Sai tài khoản hoặc mật khẩu</p>
               }
