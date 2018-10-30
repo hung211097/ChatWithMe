@@ -1,28 +1,18 @@
 import {actionTypes} from '../constants/actionType'
-import passwordHash from 'password-hash'
 import { saveItem } from '../services/localStorage.services'
+import { googleAuthProvider } from '../config/fbConfig'
 
-export const login = (user) => {
+export const loginWithUsername = (user) => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
     const firestore = getFirestore();
     const firebase = getFirebase();
     firestore.get({collection: 'users', where: [['username', '==', user.username]]}).then((data) => {
       let obj = !!data.docs.length ? data.docs[0].data() : null
-      // obj = obj[0]._document
-      // console.log("DOCS", obj.data.internalValue.get('email'));
-      // console.log(ResultifyData(obj, 'password').trim());
-      // console.log(user.password);
-      // console.log(passwordHash.verify(user.password, ResultifyData(obj, 'password').trim()));
-      if(obj){  //Check password
-        if(!passwordHash.verify(user.password, obj.password.trim())){
-          dispatch({type: actionTypes.LOGIN_FAILED})
-          return
-        }
-      }
+
       if(data.docs.length){
         firebase.auth().signInWithEmailAndPassword(
           obj.email,
-          obj.password
+          user.password
         ).then(() => {
           saveItem('account_status', 'logged')
           dispatch({type: actionTypes.LOGIN_SUCCESS})
@@ -33,6 +23,32 @@ export const login = (user) => {
       else{
         dispatch({type: actionTypes.LOGIN_FAILED})
       }
+    })
+  }
+}
+
+export const loginWithGoogle = () => {
+  return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const firestore = getFirestore();
+    const firebase = getFirebase();
+    firebase.auth().signInWithPopup(googleAuthProvider).then(res => {
+      dispatch({type: actionTypes.LOGIN_SUCCESS})
+      saveItem('account_status', 'logged')
+      const user = res.user;
+      firestore.get({collection: 'users', where: [['email', '==', user.email]]}).then((data) => {
+        if(!data.docs.length){
+          firestore.collection('users').add({
+            display_name: user.displayName,
+            username: user.displayName,
+            photoURL: user.photoURL,
+            email: user.email,
+            phoneNumber: user.phoneNumber,
+            UID: user.W.O
+          })
+        }
+      })
+    }).catch(e => {
+      dispatch({type: actionTypes.LOGIN_FAILED})
     })
   }
 }
@@ -53,7 +69,6 @@ export const register = (user, callback) => {
         ).then((res) => {
           return firestore.collection('users').doc(res.user.uid).set({
             username: user.username.trim(),
-            password: user.password.trim(),
             display_name: user.username.trim(),
             email: user.email.trim(),
             uid: res.user.uid
@@ -82,12 +97,5 @@ export const logout = (redirectCallback) => {
     }).then(() => {
       redirectCallback()
     })
-  }
-}
-
-export const changStatus = (status) => {
-  return{
-    type: actionTypes.CHANGE_STATUS,
-    status: status
   }
 }

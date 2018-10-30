@@ -3,7 +3,7 @@ import styles from './index.scss';
 import Logo from '../../images/logoLarge.png'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { login, changStatus, logout } from '../../actions'
+import { loginWithUsername, logout, loginWithGoogle } from '../../actions'
 // import {firebaseConnect} from 'react-redux-firebase'
 // import {compose} from 'redux'
 import { Link } from 'react-router-dom'
@@ -12,11 +12,12 @@ import { loadItem } from '../../services/localStorage.services'
 import {googlePlus} from 'react-icons-kit/fa/googlePlus'
 import { Icon } from 'react-icons-kit'
 import { accountStatus } from '../../constants/localStorage'
+import { Redirect } from 'react-router-dom'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    login: (user) => dispatch(login(user)),
-    changeStatus: (status) => dispatch(changStatus(status)),
+    loginWithUsername: (user) => dispatch(loginWithUsername(user)),
+    loginWithGoogle: () => dispatch(loginWithGoogle()),
     logout: () => dispatch(logout())
   }
 }
@@ -33,7 +34,7 @@ class Login extends Component {
   static propTypes = {
     auth_status: PropTypes.string,
     notLogged: PropTypes.bool,
-    login: PropTypes.func,
+    loginWithUsername: PropTypes.func,
     changeStatus: PropTypes.func
   }
 
@@ -60,7 +61,7 @@ class Login extends Component {
     if(!this.validate()){
       return
     }
-    this.props.login({username: this.state.username, password: this.state.password})
+    this.props.loginWithUsername({username: this.state.username, password: this.state.password})
   }
 
   validate(){
@@ -88,7 +89,14 @@ class Login extends Component {
     }
   }
 
+  handleGoogleLogin(){
+    this.props.loginWithGoogle()
+  }
+
   render() {
+    if(loadItem('account_status') === accountStatus.LOGGED){
+      return <Redirect to='/' />
+    }
     return (
       <div className={styles.loginPage}>
         <div className="well-logo">
@@ -120,7 +128,7 @@ class Login extends Component {
             </div>
             <div className="loggin">
               <button className="btn btn-primary" type="submit" onClick={this.handleSubmit.bind(this)}>Đăng nhập</button>
-              <button className="btn btn-google" type="button"><Icon icon={googlePlus} size={24} style={{position: 'relative', top: '-2px'}}/>
+              <button className="btn btn-google" type="button" onClick={this.handleGoogleLogin.bind(this)}><Icon icon={googlePlus} size={24} style={{position: 'relative', top: '-2px'}}/>
               &nbsp;Đăng nhập với Google</button>
               <p>Bạn chưa có tài khoản, <Link to='/register'>Đăng ký ở đây</Link></p>
               {this.state.isSubmit && this.props.auth_status === 'failed' &&

@@ -3,21 +3,19 @@ import styles from'./index.scss';
 import Logo from '../../images/logoLarge.png'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { register, changStatus } from '../../actions'
+import { register } from '../../actions'
 // import { withFirestore} from 'react-redux-firebase'
 // import {compose} from 'redux'
 import { Link } from 'react-router-dom'
 import { validateEmail } from '../../services/utils.services'
 import PropTypes from 'prop-types'
-import passwordHash from 'password-hash'
 import SweetAlert from 'react-bootstrap-sweetalert';
 import { loadItem } from '../../services/localStorage.services'
 import { accountStatus } from '../../constants/localStorage'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    register: (user, callback) => dispatch(register(user, callback)),
-    changeStatus: (status) => dispatch(changStatus(status))
+    register: (user, callback) => dispatch(register(user, callback))
   }
 }
 
@@ -63,7 +61,7 @@ class Register extends Component {
     if(!this.validate()){
       return
     }
-    this.props.register({username: this.state.username, password: passwordHash.generate(this.state.password), email: this.state.email}, () => {this.showAlert()})
+    this.props.register({username: this.state.username, password: this.state.password, email: this.state.email}, () => {this.showAlert()})
   }
 
   showAlert(){
