@@ -1,11 +1,21 @@
 @import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
 
+html {
+    height:100%;
+}
+
 body {
   background-color: #FAFAFC;
+  min-height:100%;
+  /* overflow: hidden; */
 }
 
 a {
   cursor: pointer;
+}
+
+img{
+  max-width: 100%;
 }
 
 .effect-input {
