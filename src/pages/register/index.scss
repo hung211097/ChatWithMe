@@ -1,0 +1,107 @@
+@import '../../styles/variables';
+
+:local(.registerPage){
+  .well-logo{
+    background-color: $main-color;
+    text-align: center;
+    .slogan{
+      img{
+        width: 13%;
+        @media screen and (max-width: 767px){
+          width: 20%;
+        }
+        @media screen and (max-width: 576px){
+          width: 35%;
+        }
+      }
+      h1{
+        color: white;
+        font-weight: bold;
+        font-style: italic;
+        font-size: 55px;
+        display: inline-block;
+        margin-left: 25px;
+        @media screen and (max-width: 767px){
+          font-size: 35px;
+          margin-left: 0;
+          padding-bottom: 10px;
+        }
+      }
+
+    }
+  }
+
+  .form-login{
+    width: 35%;
+    @media screen and (max-width: 991px){
+      width: 50%;
+    }
+    @media screen and (max-width: 767px){
+      width: 70%;
+    }
+    @media screen and (max-width: 576px){
+      width: 90%;
+    }
+    padding: 20px 40px 20px;
+    display: block;
+    margin: auto;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    transition: 0.3s ease-in-out;
+    &:hover{
+      background-color: white;
+      -webkit-box-shadow: 1px 3px 8px 3px rgba(0,0,0,0.54);
+      -moz-box-shadow: 1px 3px 8px 3px rgba(0,0,0,0.54);
+      box-shadow: 1px 3px 8px 3px rgba(0,0,0,0.54);
+    }
+    h2{
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .field{
+      margin-bottom: 40px;
+      .input-effect{
+        margin-bottom: 10px;
+        input{
+          &:focus{
+            color: $main-color;
+            & ~ label{
+              color: $main-color;
+            }
+          }
+        }
+        label{
+        }
+        .focus-border{
+          background-color: $main-color;
+        }
+      }
+    }
+    .loggin{
+      text-align: center;
+      button{
+        padding: 8px 50px;
+        font-size: 18px;
+        font-weight: bold;
+        width: 100%;
+      }
+      p{
+        margin-top: 30px;
+        a{
+          color: $main-color;
+          &:hover{
+            color: $main-color;
+          }
+          @media screen and (max-width: 576px){
+            display: block;
+          }
+        }
+      }
+    }
+  }
+
+  .btn-primary{
+    background: $main-color !important;
+    border-color: $main-color !important;
+  }
+}
