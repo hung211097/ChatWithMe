@@ -3,7 +3,7 @@ import styles from './index.scss';
 import Logo from '../../images/logoLarge.png'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { loginWithUsername, logout, loginWithGoogle } from '../../actions'
+import { loginWithUsername, logout, loginWithGoogle, changStatus } from '../../actions'
 // import {firebaseConnect} from 'react-redux-firebase'
 // import {compose} from 'redux'
 import { Link } from 'react-router-dom'
@@ -18,7 +18,8 @@ const mapDispatchToProps = (dispatch) => {
   return{
     loginWithUsername: (user) => dispatch(loginWithUsername(user)),
     loginWithGoogle: () => dispatch(loginWithGoogle()),
-    logout: () => dispatch(logout())
+    logout: () => dispatch(logout()),
+    changeStatus: (status) => dispatch(changStatus(status))
   }
 }
 
@@ -48,6 +49,7 @@ class Login extends Component {
   }
 
   componentDidMount(){
+    document.body.style.overflow = 'auto'
     if(loadItem('account_status') === accountStatus.LOGGED){
       this.props.history.push('/')
     }

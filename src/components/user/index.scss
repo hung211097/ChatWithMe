@@ -1,14 +1,50 @@
 @import '../../styles/variables';
 
-:local(.homePage) {
+:local(.user) {
   font: 14px/20px "Lato", Arial, sans-serif;
-  .container-app {
-    // margin: 50px auto;
-    // width: 74%px;
-    // border-radius: 8px;
-    background: #444753;
-    padding: 0;
-    height: 100vh;
+  li {
+    cursor: pointer;
+    padding: 10px 20px;
+    position: relative;
+    &:hover{
+      background: #aeaeae4d;
+    }
+    &.active{
+      background: #3C98BF;
+      .status{
+        color: white;
+      }
+    }
+    .star{
+      position: absolute;
+      right: 30px;
+      top: 20px;
+      cursor: pointer;
+    }
+    img{
+      max-width: 19%;
+      float: left;
+      border-radius: 50%;
+    }
+
+    .about {
+      float: left;
+      margin-top: 8px;
+    }
+
+    .about {
+      padding-left: 8px;
+    }
+
+    .name{
+      color: white;
+      font-weight: bold;
+    }
+
+    .status {
+      color: $gray;
+      font-weight: bold;
+    }
   }
 
   .me,
@@ -51,10 +87,6 @@
     height: 0;
   }
 
-  ul{
-    list-style: none;
-    margin: 0;
-  }
   .circle{
     width: 8px;
     height: 8px;

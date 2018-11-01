@@ -1,14 +1,38 @@
 @import '../../styles/variables';
 
-:local(.homePage) {
+:local(.userListComponent) {
   font: 14px/20px "Lato", Arial, sans-serif;
-  .container-app {
-    // margin: 50px auto;
-    // width: 74%px;
-    // border-radius: 8px;
-    background: #444753;
-    padding: 0;
+
+  .people-list {
+    width: 26%;
+    float: left;
     height: 100vh;
+    .search {
+      padding: 14px 20px;
+      border-bottom: 1px solid grey;
+    }
+
+    input {
+      border-radius: 3px;
+      border: none;
+      padding: 10px;
+      color: white;
+      background: #6A6C75;
+      width: 90%;
+      font-size: 17px;
+      padding-right: 30px
+    }
+
+    .fa-search {
+      position: relative;
+      left: -25px;
+    }
+
+    ul {
+      padding: 0px;
+      overflow-y: auto;
+      height: 89%;
+    }
   }
 
   .me,

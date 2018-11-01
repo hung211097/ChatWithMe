@@ -43,6 +43,7 @@ export const loginWithGoogle = () => {
             photoURL: user.photoURL,
             email: user.email,
             phoneNumber: user.phoneNumber,
+            status: 'offline',
             UID: user.W.O
           })
         }
@@ -62,7 +63,6 @@ export const register = (user, callback) => {
     let checkEmail = firestore.get({collection: 'users', where: [['email', '==', user.email]]})
     Promise.all([checkUsername, checkEmail]).then(([resUsername, resEmail]) => {
       if(!resUsername.docs.length && !resEmail.docs.length){
-        callback()
         firebase.auth().createUserWithEmailAndPassword(
           user.email,
           user.password
@@ -71,14 +71,16 @@ export const register = (user, callback) => {
             username: user.username.trim(),
             display_name: user.username.trim(),
             email: user.email.trim(),
-            uid: res.user.uid
+            status: 'offline',
+            UID: res.user.uid
           })
         }).then(() => {
+          callback()
           saveItem('account_status', 'logged')
           dispatch({type: actionTypes.REGISTER_SUCCESS})
         })
         .catch(e => {
-          dispatch({type: actionTypes.SERVER_ERROR})
+          dispatch({type: actionTypes.REGISTER_FAILED})
         })
       }
       else{
@@ -97,5 +99,12 @@ export const logout = (redirectCallback) => {
     }).then(() => {
       redirectCallback()
     })
+  }
+}
+
+export const changStatus = (status) => {
+  return{
+    type: actionTypes.CHANGE_STATUS,
+    status: status
   }
 }

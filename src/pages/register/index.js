@@ -3,7 +3,7 @@ import styles from'./index.scss';
 import Logo from '../../images/logoLarge.png'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { register } from '../../actions'
+import { register, changStatus } from '../../actions'
 // import { withFirestore} from 'react-redux-firebase'
 // import {compose} from 'redux'
 import { Link } from 'react-router-dom'
@@ -15,7 +15,8 @@ import { accountStatus } from '../../constants/localStorage'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    register: (user, callback) => dispatch(register(user, callback))
+    register: (user, callback) => dispatch(register(user, callback)),
+    changeStatus: (status) => dispatch(changStatus(status))
   }
 }
 
@@ -48,6 +49,7 @@ class Register extends Component {
   }
 
   componentDidMount(){
+    document.body.style.overflow = 'auto'
     if(loadItem('account_status') === accountStatus.LOGGED){
       this.props.history.push('/')
     }
