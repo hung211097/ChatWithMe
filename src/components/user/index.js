@@ -11,10 +11,11 @@ import defaulAvatar from '../../images/default-avatar.png'
 import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
 import {fromNowTimeStamp} from '../../services/utils.services'
+import {updateUserChatName} from '../../actions'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-
+    updateUserChatName: (name) => dispatch(updateUserChatName(name))
   }
 }
 
@@ -41,6 +42,7 @@ class User extends Component {
       this.setState({
         active: true
       })
+      this.props.updateUserChatName(this.props.user.display_name)
     }
     else{
       this.setState({
@@ -48,11 +50,13 @@ class User extends Component {
       })
     }
   }
+
   UNSAFE_componentWillReceiveProps(props){
     if(props.match && props.match.params.id === this.props.user.UID){
       this.setState({
         active: true
       })
+      this.props.updateUserChatName(this.props.user.display_name)
     }
     else{
       this.setState({

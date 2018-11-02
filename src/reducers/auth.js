@@ -2,7 +2,6 @@ import {actionTypes} from '../constants/actionType'
 
 const initialState = {
   auth_status: null,
-  list_users_status: []
 }
 
 export default (state = initialState, action) => {

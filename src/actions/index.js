@@ -150,3 +150,10 @@ export const updateStatus = () => {
     })
   }
 }
+
+export const updateUserChatName = (name) => {
+  return{
+    type: actionTypes.NAME_CHAT_USER,
+    name: name
+  }
+}

@@ -14,8 +14,10 @@ import {fileO} from 'react-icons-kit/fa/fileO'
 import logo from '../../images/logoNav2.png'
 import defaulAvatar from '../../images/default-avatar.png'
 import ClickOutside from '../../components/click-outside'
-import {withFirestore, firestoreConnect} from 'react-redux-firebase'
+import {withFirestore, withFirebase, firestoreConnect} from 'react-redux-firebase'
 import {compose} from 'redux'
+import _ from 'lodash'
+import {connectStringID, formatDate} from '../../services/utils.services'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -24,7 +26,17 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
+  console.log("STATE", state);
+
+  let chatData = _.values(state.firestore.data.chatbox)
+  if(chatData.length){
+    chatData = chatData[0]
+  }
+
+  console.log("CHAT",chatData)
   return{
+    dataChat: chatData,
+    nameUserChat: state.chat.nameUser,
     profile: state.firebase.profile && state.firebase.profile.isEmpty ? state.firebase.auth : state.firebase.profile
   }
 }
@@ -36,11 +48,48 @@ class ChatBox extends Component {
 
   constructor(props){
     super(props)
+    const {dataChat} = this.props
     this.state = {
-      showDropdown: false
+      showDropdown: false,
+      messages: dataChat && dataChat.messages && !!dataChat.messages.length ? dataChat.messages : [],
+      lastChat: dataChat && dataChat.lastChatAt ? dataChat.lastChatAt : null,
+      content: ""
     }
   }
-  
+
+  componentDidMount(){
+    const {firestore} = this.props
+    const {profile} = this.props
+
+    if(this.props.match.params && this.props.match.params.id){
+      firestore.setListener({collection: 'chatbox', where: ['id', '==', connectStringID(profile.uid, this.props.match.params.id)]})
+
+      // firestore.get({collection: 'chatbox', where: ['id', '==', connectStringID(profile.uid, this.props.match.params.id)]}).then((data) => {
+      //   if(data.docs.length){
+      //     let temp =  data.docs[0].data()
+      //     this.setState({
+      //       messages: temp.messages,
+      //       lastChat: temp.lastChatAt
+      //     })
+      //   }
+      // })
+    }
+  }
+
+  UNSAFE_componentWillReceiveProps(props){
+    const {dataChat} = props
+    this.setState({
+      messages: dataChat && dataChat.messages && !!dataChat.messages.length ? dataChat.messages : [],
+      lastChat: dataChat && dataChat.lastChatAt ? dataChat.lastChatAt : null,
+    })
+  }
+
+  componentWillUnmount(){
+    const {firestore} = this.props
+    const {profile} = this.props
+    firestore.unsetListener({collection: 'chatbox', where: ['id', '==', connectStringID(profile.uid, this.props.match.params.id)]})
+  }
+
   handleLogout(){
     this.props.logout(() => {
       this.props.history.push('/login')
@@ -59,8 +108,21 @@ class ChatBox extends Component {
     })
   }
 
+  handleChangeContent(e){
+    this.setState({
+      content: e.target.value
+    })
+  }
+
+  handleOnSubmit(){
+    if(this.state.content){
+
+    }
+  }
+
   render() {
-    // console.log(this.props);
+    console.log(this.props);
+    console.log("COMPONENT", this.state);
     const {profile} = this.props
     return (
       <div className={styles.chatbox}>
@@ -91,63 +153,48 @@ class ChatBox extends Component {
           {/* end chat-header */}
           <div className="chat-history">
             <ul>
-              <li className="clearfix">
-                <div className="message-data align-right">
-                  <span className="message-data-time">10:10 AM, Today</span> &nbsp; &nbsp;
-                  <span className="message-data-name">Olia</span> <span className="circle me"/>
-                </div>
-                <div className="message other-message float-right">
-                  Hi Vincent, how are you? How is the project coming along?
-                </div>
-              </li>
-              <li>
-                <div className="message-data">
-                  <span className="message-data-name"><span className="circle other"/> Vincent</span>
-                  <span className="message-data-time">10:12 AM, Today</span>
-                </div>
-                <div className="message my-message">
-                  Are we meeting today? Project has been already finished and I have results to show you.
-                </div>
-              </li>
-              <li className="clearfix">
-                <div className="message-data align-right">
-                  <span className="message-data-time">10:14 AM, Today</span> &nbsp; &nbsp;
-                  <span className="message-data-name">Olia</span> <span className="circle me"/>
-                </div>
-                <div className="message other-message float-right">
-                  Well I am not sure. The rest of the team is not here yet. Maybe in an hour or so? Have you faced any problems at the last phase of the project?
-                </div>
-              </li>
-              <li>
-                <div className="message-data">
-                  <span className="message-data-name"><span className="circle other"/> Vincent</span>
-                  <span className="message-data-time">10:20 AM, Today</span>
-                </div>
-                <div className="message my-message">
-                  Actually everything was fine. I&quot;m very excited to show this to our team.
-                </div>
-              </li>
-              <li>
-                <div className="message-data">
-                  <span className="message-data-name"><span className="circle other"/> Vincent</span>
-                  <span className="message-data-time">10:31 AM, Today</span>
-                </div>
-                <span className="circle other"/>
-                <span className="circle other" style={{background: '#444753e6'}}/>
-                <span className="circle other" style={{background: '#444753cc'}}/>
-              </li>
+              {!!this.state.messages.length && this.state.messages.map((item, key) => {
+                  return(
+                    <li className={profile.uid === item.belongTo ? "clearfix" : ""} key={key}>
+                      <div className={profile.uid === item.belongTo ? "message-data align-right" : "message-data"}>
+                        {profile.uid === item.belongTo ?
+                          <div>
+                            <span className="message-data-time">{formatDate(item.chatAt, "hh:mm A, dddd")}</span> &nbsp; &nbsp;
+                            <span className="message-data-name">{profile.uid === item.belongTo ? profile.display_name : this.props.nameUserChat}</span>
+                            <span className={profile.uid === item.belongTo ? "circle me" : "circle other"}/>
+                          </div>
+                          :
+                          <div>
+                            <span className="message-data-name">
+                              <span className={profile.uid === item.belongTo ? "circle me" : "circle other"}/>
+                              {profile.uid === item.belongTo ? profile.display_name : this.props.nameUserChat}
+                            </span>
+                            <span className="message-data-time">{formatDate(item.chatAt, "hh:mm A, dddd")}</span> &nbsp; &nbsp;
+                          </div>
+                        }
+                      </div>
+                      <div className={profile.uid === item.belongTo ? "message my-message float-right" : "message other-message"}>
+                        {item.content}
+                      </div>
+                    </li>
+                  )
+                })
+              }
             </ul>
           </div>
           {/* end chat-history */}
           <div className="chat-message clearfix">
-            <textarea name="message-to-send" id="message-to-send" placeholder="Type your message" rows={3} defaultValue={""} />
-            <a className="file">
-              <Icon icon={fileO} size={18} />
-            </a>
-            <a className="fileImage">
-              <Icon icon={fileImageO} size={18} /> &nbsp;&nbsp;&nbsp;
-            </a>
-            <button>Send</button>
+            <form onSubmit={this.handleOnSubmit.bind(this)}>
+              <textarea name="message-to-send" id="message-to-send" placeholder="Nhập tin nhắn" rows={3}
+                defaultValue={this.state.content} onChange={this.handleChangeContent.bind(this)}/>
+              <a className="file">
+                <Icon icon={fileO} size={18} />
+              </a>
+              <a className="fileImage">
+                <Icon icon={fileImageO} size={18} /> &nbsp;&nbsp;&nbsp;
+              </a>
+              <button type="button" onClick={this.handleOnSubmit.bind(this)}>Gửi</button>
+            </form>
           </div>
           {/* end chat-message */}
         </div>
@@ -159,6 +206,7 @@ class ChatBox extends Component {
 export default withRouter(
   compose(
     withFirestore,
+    withFirebase,
     firestoreConnect(['users']),
     connect(mapStateToProps, mapDispatchToProps)
   )(ChatBox)
