@@ -10,6 +10,7 @@ import {star} from 'react-icons-kit/fa/star'
 import defaulAvatar from '../../images/default-avatar.png'
 import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
+import {fromNowTimeStamp} from '../../services/utils.services'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -71,7 +72,10 @@ class User extends Component {
               <div className="name">{user.display_name}</div>
               <div className="status">
                 <span className={user.status === "online" ? "circle online" : "circle offline"}/> {user.status}
-                </div>
+                {user.endAt && user.status === "offline" &&
+                  <span className="atTime"> {fromNowTimeStamp(user.endAt)}</span>
+                }
+              </div>
               </div>
               <span className="star"><Icon icon={starO} size={20} style={{color: 'white'}}/></span>
             </li>

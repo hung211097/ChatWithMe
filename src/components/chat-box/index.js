@@ -40,16 +40,7 @@ class ChatBox extends Component {
       showDropdown: false
     }
   }
-
-  componentDidMount(){
-    if(this.props.notLogged && loadItem('account_status') === accountStatus.UNLOGGED){
-      this.props.history.push('/login')
-    }
-    else{
-      saveItem('account_status', accountStatus.LOGGED)
-    }
-  }
-
+  
   handleLogout(){
     this.props.logout(() => {
       this.props.history.push('/login')
@@ -69,7 +60,7 @@ class ChatBox extends Component {
   }
 
   render() {
-    console.log(this.props);
+    // console.log(this.props);
     const {profile} = this.props
     return (
       <div className={styles.chatbox}>

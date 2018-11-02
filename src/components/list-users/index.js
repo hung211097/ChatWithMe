@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Icon } from 'react-icons-kit'
 import {search} from 'react-icons-kit/fa/search'
-import {withFirestore, firestoreConnect} from 'react-redux-firebase'
+import {withFirestore, firestoreConnect, } from 'react-redux-firebase'
 import {compose} from 'redux'
 import User from '../user'
 import _ from 'lodash'
@@ -17,7 +17,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
-  // console.log("STATE", state)
   let temp = []
   if(state.firestore.data.users){
     temp = _.values(state.firestore.data.users)
