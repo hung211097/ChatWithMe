@@ -151,9 +151,9 @@ export const updateStatus = () => {
   }
 }
 
-export const updateUserChatName = (name) => {
+export const updateUserChatInfo = (data) => {
   return{
-    type: actionTypes.NAME_CHAT_USER,
-    name: name
+    type: actionTypes.INFO_CHAT_USER,
+    info: data
   }
 }

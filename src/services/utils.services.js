@@ -1,4 +1,4 @@
-import {formatDistance} from 'date-fns'
+import {formatDistance, compareDesc} from 'date-fns'
 import locale from 'date-fns/locale/vi'
 import format from 'date-fns/format'
 
@@ -20,5 +20,9 @@ export function connectStringID(string1, string2){
 }
 
 export function formatDate(date, name='DD/MM/YYYY') {
-	return format(new Date(date), name)
+	return format(new Date(date), name, {locale: locale})
+}
+
+export function compareDateReverse(dateLeft, dateRight){
+  return compareDesc(new Date(dateLeft), new Date(dateRight))
 }

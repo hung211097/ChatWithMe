@@ -11,11 +11,11 @@ import defaulAvatar from '../../images/default-avatar.png'
 import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
 import {fromNowTimeStamp} from '../../services/utils.services'
-import {updateUserChatName} from '../../actions'
+import {updateUserChatInfo} from '../../actions'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    updateUserChatName: (name) => dispatch(updateUserChatName(name))
+    updateUserChatInfo: (data) => dispatch(updateUserChatInfo(data))
   }
 }
 
@@ -42,7 +42,7 @@ class User extends Component {
       this.setState({
         active: true
       })
-      this.props.updateUserChatName(this.props.user.display_name)
+      this.props.updateUserChatInfo({name: this.props.user.display_name, uid: this.props.user.UID})
     }
     else{
       this.setState({
@@ -56,7 +56,7 @@ class User extends Component {
       this.setState({
         active: true
       })
-      this.props.updateUserChatName(this.props.user.display_name)
+      this.props.updateUserChatInfo({name: this.props.user.display_name, uid: this.props.user.UID})
     }
     else{
       this.setState({

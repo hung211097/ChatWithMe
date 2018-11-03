@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import styles from'./index.scss';
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
 import { saveItem, loadItem } from '../../services/localStorage.services'
 import { accountStatus } from '../../constants/localStorage'
 import UsersList from '../../components/list-users'
@@ -20,9 +19,6 @@ const mapStateToProps = (state) => {
 }
 
 class Home extends Component {
-  static propTypes = {
-  }
-
   constructor(props){
     super(props)
     this.state = {
