@@ -27,13 +27,13 @@ const mapStateToProps = (state) => {
 
   if(state.firestore.data.users){
     temp = _.values(state.firestore.data.users)
-    let myStars = temp.find((item) => {  //Get my info
+    let myInfo = temp.find((item) => {  //Get my info
       return uid === item.UID
     })
-
+    // console.log(myInfo);
     let stars = []
-    if(myStars.stars && myStars.stars.length){  //Get my star users
-      stars = myStars.stars
+    if(myInfo && myInfo.stars && myInfo.stars.length){  //Get my star users
+      stars = myInfo.stars
     }
 
     temp = temp.filter((item) => {  //Get List user not me
@@ -59,7 +59,7 @@ const mapStateToProps = (state) => {
                 let tmp = stars.find((starUser) => {
                   return starUser.UID === res.UID
                 })
-                if(tmp && tmp.isStar){  //Priority push if check star
+                if(tmp && tmp.isStar && res.status === 'online'){  //Priority push if check star
                   recentChat.push(res)
                 }else{
                   tempRecentChat.push(res)
@@ -81,7 +81,7 @@ const mapStateToProps = (state) => {
 
       temp.forEach((item) => {
         let res = stars.find((userStar) => {
-          return item.UID === userStar.UID && userStar.isStar
+          return item.UID === userStar.UID && userStar.isStar && item.status === 'online'
         })
         if(res){
           recentChat.push(item)

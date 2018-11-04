@@ -120,9 +120,11 @@ class User extends Component {
     const {user} = this.props
     const {stars} = this.props
     let star = (<span className="star" onClick={this.handleStar.bind(this)}><Icon icon={starO} size={20} style={{color: 'white'}}/></span>)
-    for(let i = 0; i < stars.length; i++){
-      if(stars[i].UID === user.UID && stars[i].isStar){
-        star = (<span className="star" onClick={this.handleStar.bind(this)}><Icon icon={ic_star} size={20} style={{color: 'white'}}/></span>)
+    if(stars && stars.length){
+      for(let i = 0; i < stars.length; i++){
+        if(stars[i].UID === user.UID && stars[i].isStar){
+          star = (<span className="star" onClick={this.handleStar.bind(this)}><Icon icon={ic_star} size={20} style={{color: 'white'}}/></span>)
+        }
       }
     }
     return (
