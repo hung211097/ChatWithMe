@@ -3,7 +3,7 @@ import styles from'./index.scss';
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { logout } from '../../actions'
+import { logout, sendMessage } from '../../actions'
 import { Icon } from 'react-icons-kit'
 import {signOut} from 'react-icons-kit/fa/signOut'
 import {info} from 'react-icons-kit/fa/info'
@@ -20,13 +20,13 @@ import ReactTooltip from 'react-tooltip'
 
 const mapDispatchToProps = (dispatch) => {
   return{
-    logout: (redirectCallback) => dispatch(logout(redirectCallback))
+    logout: (redirectCallback) => dispatch(logout(redirectCallback)),
+    sendMessage: (data, callback) => dispatch(sendMessage(data, callback))
   }
 }
 
 const mapStateToProps = (state) => {
   // console.log("STATE", state);
-
   let chatData = _.values(state.firestore.data.chatbox)
   let tempProfile = state.firebase.profile && state.firebase.profile.isEmpty ? state.firebase.auth : state.firebase.profile
   let uid = tempProfile.uid ? tempProfile.uid : tempProfile.UID
@@ -60,7 +60,8 @@ class ChatBox extends Component {
       messages: dataChat && dataChat.messages && !!dataChat.messages.length ? dataChat.messages : [],
       lastChat: dataChat && dataChat.lastChatAt ? dataChat.lastChatAt : null,
       content: "",
-      originID: ""
+      originID: "",
+      files: []
     }
   }
 
@@ -105,34 +106,13 @@ class ChatBox extends Component {
   }
 
   handleOnSubmit(){
-    const{firestore} = this.props
-    const{profile} = this.props
-    let uid = profile.uid ? profile.uid : profile.UID
-    if(this.state.content){
-      let arr = this.state.messages
-      let date = new Date()
-      let connectString = connectStringID(uid, this.props.infoUser.uid)
-      arr.push({
-        belongTo: uid,
-        chatAt: date.toString(),
-        content: this.state.content
-      })
-      firestore.get({collection: 'chatbox', where: ['id', '==', connectString]}).then((data) => {
-        if(data.docs.length){
-          let id = data.docs[0].id
-          firestore.update({collection: 'chatbox', doc: id}, {lastChatAt: date.toString(), messages: arr}).then(() => {
-            this.scrollToBottom()
-          })
-        }
-        else{
-          firestore.collection('chatbox').doc(connectString).set({
-            id: connectString,
-            lastChatAt: date.toString(),
-            messages: arr
-          })
-        }
-      })
-    }
+    this.props.sendMessage(
+      {messages: this.state.messages, content: this.state.content, files: this.state.files, infoUser: this.props.infoUser},
+      () => {this.scrollToBottom()}
+    )
+    this.setState({
+      files: []
+    })
   }
 
   handleKeyPress(event){
@@ -159,8 +139,25 @@ class ChatBox extends Component {
     box.scrollTop = box.scrollHeight - box.clientHeight;
   }
 
+  handleOnSelectFile(event){
+    let files = event.target.files
+    this.setState({
+      files: [...this.state.files, ...files]
+    })
+  }
+
+  handleRemoveImage(index){
+    let tempFiles = this.state.files
+    tempFiles = tempFiles.filter((item, key) => {
+      return key !== index
+    })
+    this.setState({
+      files: tempFiles
+    })
+  }
+
   render() {
-    // console.log(this.props);
+    // console.log(this.state);
     const {profile} = this.props
     const uid = profile.uid ? profile.uid : profile.UID
     const display_name = profile.display_name ? profile.display_name : profile.displayName
@@ -194,6 +191,9 @@ class ChatBox extends Component {
           <div className="chat-history" id="box-chat">
             <ul>
               {!!this.state.messages.length && this.state.messages.map((item, key) => {
+                  if(!(item.content || (item.images && item.images.length))){
+                    return null
+                  }
                   return(
                     <li className={uid === item.belongTo ? "clearfix" : ""} key={key}>
                       <div className={uid === item.belongTo ? "message-data align-right" : "message-data"}>
@@ -220,7 +220,13 @@ class ChatBox extends Component {
                         }
                       </div>
                       <div className={uid === item.belongTo ? "message my-message float-right" : "message other-message"}>
-                        {item.content}
+                        {item.content ? item.content : null}
+                        {item.images && !!item.images.length && item.images.map((img, key) => {
+                            return(
+                              <img src={img} alt="message-img" />
+                            )
+                          })
+                        }
                       </div>
                     </li>
                   )
@@ -233,13 +239,31 @@ class ChatBox extends Component {
             <form onSubmit={this.handleOnSubmit.bind(this)}>
               <textarea name="message-to-send" id="message-to-send" placeholder="Nhập tin nhắn" rows={3}
                 defaultValue="" onKeyPress={this.handleKeyPress.bind(this)}/>
-              <span className="file">
-                <Icon icon={fileO} size={18} />
+              <span className="media">
+                <span className="file">
+                  <Icon icon={fileO} size={18} />
+                </span>
+                <label htmlFor="image-upload" className="fileImage">
+                  <Icon icon={fileImageO} size={18} /> &nbsp;&nbsp;&nbsp;
+                  <input id="image-upload" type="file" multiple accept="image/*" onChange={this.handleOnSelectFile.bind(this)} style={{display: "none"}}/>
+                </label>
+                <div className="image-box">
+                  <div className="preview-box">
+                    {this.state.files && this.state.files.map((item, key) => {
+                        return(
+                          <div className="tag" key={key}>
+                            <button type="button" className="close-x" onClick={this.handleRemoveImage.bind(this, key)}>
+                              <span>X</span>
+                            </button>
+                            <p>{item.name}</p>
+                          </div>
+                        )
+                      })
+                    }
+                  </div>
+                </div>
+                <button type="button" onClick={this.handleOnSubmit.bind(this)}>Gửi</button>
               </span>
-              <span className="fileImage">
-                <Icon icon={fileImageO} size={18} /> &nbsp;&nbsp;&nbsp;
-              </span>
-              <button type="button" onClick={this.handleOnSubmit.bind(this)}>Gửi</button>
             </form>
           </div>
           {/* end chat-message */}

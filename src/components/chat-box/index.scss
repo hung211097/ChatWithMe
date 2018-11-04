@@ -188,7 +188,23 @@
         margin-bottom: 10px;
         border-radius: 5px;
         resize: none;
-        height: 130px;
+        height: 110px;
+      }
+      .media{
+        display: block;
+      }
+      .image-box{
+        width: 85%;
+        display: inline-block;
+        height: auto;
+        position: relative;
+        margin-left: 20px;
+        .preview-box{
+          display: flex;
+          height: 47px;
+          width: 100%;
+          overflow-x: auto;
+        }
       }
 
       .fa-file-image-o,
@@ -215,8 +231,10 @@
       .file{
         margin-right: 10px;
         cursor: pointer;
+        float: left;
       }
       .fileImage{
+        float: left;
         cursor: pointer;
       }
     }

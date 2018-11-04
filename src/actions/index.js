@@ -1,6 +1,8 @@
 import {actionTypes} from '../constants/actionType'
 import { saveItem } from '../services/localStorage.services'
 import { googleAuthProvider } from '../config/fbConfig'
+import {storage} from '../config/fbConfig'
+import {connectStringID} from '../services/utils.services'
 
 export const loginWithUsername = (user) => {
   return (dispatch, getState, {getFirebase, getFirestore}) => {
@@ -155,5 +157,86 @@ export const updateUserChatInfo = (data) => {
   return{
     type: actionTypes.INFO_CHAT_USER,
     info: data
+  }
+}
+
+export const sendMessage = (data, callback) => {
+  return (dispatch, getState, {getFirebase, getFirestore}) => {
+    const firestore = getFirestore()
+    const firebase = getFirebase()
+    let uid = firebase.auth().O
+    // console.log(data);
+    if(data.content || data.files.length){
+      let arr = data.messages
+      let date = new Date()
+      let connectString = connectStringID(uid, data.infoUser.uid)
+      let content = ""
+      let tempImages = []
+      if(data.content){
+        content = data.content
+      }
+      if(data.files.length){
+        let storageRef = storage.ref()
+        let imagesStream = []
+        data.files.forEach((item) =>{
+          let stream = storageRef.child(`images/${new Date().getTime()}`).put(item)
+          imagesStream.push(stream)
+        })
+        Promise.all(imagesStream).then((allUrls) => {
+          allUrls.forEach((item) => {
+            item.ref.getDownloadURL().then((url) => {
+              tempImages.push(url)
+            })
+          })
+          // console.log(tempImages);
+        }).then(() => {
+          arr.push({
+            belongTo: uid,
+            chatAt: date.toString(),
+            content: content,
+            images: tempImages
+          })
+          console.log(arr);
+          firestore.get({collection: 'chatbox', where: ['id', '==', connectString]}).then((dataFirestore) => {
+            if(dataFirestore.docs.length){
+              let id = dataFirestore.docs[0].id
+              firestore.update({collection: 'chatbox', doc: id}, {lastChatAt: date.toString(), messages: arr}).then(() => {
+                callback()
+              })
+            }
+            else{
+              firestore.collection('chatbox').doc(connectString).set({
+                id: connectString,
+                lastChatAt: date.toString(),
+                messages: arr
+              })
+            }
+          })
+        }).catch(e => console.log(e))
+      }
+      else{
+        arr.push({
+          belongTo: uid,
+          chatAt: date.toString(),
+          content: content,
+          images: tempImages
+        })
+        firestore.get({collection: 'chatbox', where: ['id', '==', connectString]}).then((dataFirestore) => {
+          if(dataFirestore.docs.length){
+            let id = dataFirestore.docs[0].id
+            firestore.update({collection: 'chatbox', doc: id}, {lastChatAt: date.toString(), messages: arr}).then(() => {
+              callback()
+            })
+          }
+          else{
+            firestore.collection('chatbox').doc(connectString).set({
+              id: connectString,
+              lastChatAt: date.toString(),
+              messages: arr
+            })
+          }
+        })
+      }
+    }
   }
 }

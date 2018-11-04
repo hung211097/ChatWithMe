@@ -2,6 +2,7 @@ import firebase from 'firebase/app'
 import 'firebase/firestore'
 import 'firebase/auth'
 import 'firebase/database'
+import 'firebase/storage'
 
 var config = {
     apiKey: "AIzaSyDiPKFGBG3FyrSgECVun-LuNaqz2x7AtS4",
@@ -15,4 +16,5 @@ firebase.initializeApp(config);
 firebase.firestore().settings({ timestampsInSnapshots: true })
 
 export const googleAuthProvider = new firebase.auth.GoogleAuthProvider();
+export const storage = firebase.storage()
 export default firebase;
