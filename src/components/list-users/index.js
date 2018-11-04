@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Icon } from 'react-icons-kit'
 import {search} from 'react-icons-kit/fa/search'
-import {withFirestore, firestoreConnect, } from 'react-redux-firebase'
+import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
 import User from '../user'
 import _ from 'lodash'
@@ -20,35 +20,75 @@ const mapDispatchToProps = (dispatch) => {
 const mapStateToProps = (state) => {
   let temp = []
   let recentChat = []
+  let tempRecentChat = []
   let tempProfile = state.firebase.profile && state.firebase.profile.isEmpty ? state.firebase.auth : state.firebase.profile
   let uid = tempProfile.uid ? tempProfile.uid : tempProfile.UID
   let chatData = _.values(state.firestore.data.chatbox)
 
   if(state.firestore.data.users){
     temp = _.values(state.firestore.data.users)
-    temp = temp.filter((item) => {
+    let myStars = temp.find((item) => {  //Get my info
+      return uid === item.UID
+    })
+
+    let stars = []
+    if(myStars.stars && myStars.stars.length){  //Get my star users
+      stars = myStars.stars
+    }
+
+    temp = temp.filter((item) => {  //Get List user not me
       return item.UID !== uid
     })
 
     if(chatData.length){
-      chatData.sort((a, b) => {
+      chatData.sort((a, b) => { //Sort date last chat
         return compareDateReverse(a.lastChatAt, b.lastChatAt)
       })
 
       chatData.forEach((chat) => {
-        if(chat.id.indexOf(uid) >= 0){
-          let res = temp.find((item) => {
-            if(chat.id.indexOf(item.UID) >= 0){
-              return item
+        if(chat){
+          if(chat.id.indexOf(uid) >= 0){  //I used to chat with...
+            let res = temp.find((item) => {
+              if(chat.id.indexOf(item.UID) >= 0){
+                return item
+              }
+              return null
+            })
+            if(res){  //Have someone
+              if(stars.length){  //If I check star that user
+                let tmp = stars.find((starUser) => {
+                  return starUser.UID === res.UID
+                })
+                if(tmp && tmp.isStar){  //Priority push if check star
+                  recentChat.push(res)
+                }else{
+                  tempRecentChat.push(res)
+                }
+              }
+              else{
+                recentChat.push(res)
+              }
             }
-            return null
-          })
-          if(res){
-            recentChat.push(res)
           }
         }
       })
 
+      recentChat.forEach((item) => {
+        temp = temp.filter((user) => {
+          return user.UID !== item.UID
+        })
+      })
+
+      temp.forEach((item) => {
+        let res = stars.find((userStar) => {
+          return item.UID === userStar.UID && userStar.isStar
+        })
+        if(res){
+          recentChat.push(item)
+        }
+      })
+
+      recentChat = [...recentChat, ...tempRecentChat]
       recentChat.forEach((item) => {
         temp = temp.filter((user) => {
           return user.UID !== item.UID
@@ -69,27 +109,47 @@ class ListUsers extends Component {
   constructor(props){
     super(props)
     this.state = {
-
+      name: ''
     }
   }
 
-  componentDidMount(){
+  handleChange(e){
+    this.setState({
+      name: e.target.value
+    })
+  }
 
+  handleReset(){
+    this.setState({
+      name: ''
+    })
   }
 
   render() {
-    // console.log("PROPS", this.props);
+    let {listUsers} = this.props
+    let filteredListUsers = []
+    if(this.state.name){
+      listUsers.forEach((item) => {
+        if(item.display_name.search(this.state.name) >= 0){
+          filteredListUsers.push(item)
+        }
+      })
+    }
+    else{
+      filteredListUsers = listUsers
+    }
     return (
       <div className={styles.userListComponent}>
         <div className="people-list" id="people-list">
           <div className="search">
-            <input type="text" placeholder="search" />
+            <input type="text" placeholder="search" onChange={this.handleChange.bind(this)} value={this.state.name}/>
             <Icon icon={search} size={16} style={{color: 'white', position: 'relative', top: '-2px'}} className="fa-search"/>
+            <button className="btn btn-reset" onClick={this.handleReset.bind(this)}>RESET</button>
           </div>
           <ul className="list">
-            {!!this.props.listUsers.length && this.props.listUsers.map((item) => {
+            {!!filteredListUsers.length && filteredListUsers.map((item, key) => {
               return(
-                  <User user={item} key={item.UID}/>
+                  <User user={item} key={key}/>
                 )
               })
             }
@@ -103,7 +163,6 @@ class ListUsers extends Component {
 export default withRouter(
   compose(
     withFirestore,
-    firestoreConnect(['users']),
     connect(mapStateToProps, mapDispatchToProps)
   )(ListUsers)
 );

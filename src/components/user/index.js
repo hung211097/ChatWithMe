@@ -6,12 +6,13 @@ import { Link } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Icon } from 'react-icons-kit'
 import {starO} from 'react-icons-kit/fa/starO'
-import {star} from 'react-icons-kit/fa/star'
+import {ic_star} from 'react-icons-kit/md/ic_star'
 import defaulAvatar from '../../images/default-avatar.png'
-import {withFirestore} from 'react-redux-firebase'
-import {compose} from 'redux'
 import {fromNowTimeStamp} from '../../services/utils.services'
 import {updateUserChatInfo} from '../../actions'
+import {withFirestore} from 'react-redux-firebase'
+import {compose} from 'redux'
+import _ from 'lodash'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -20,8 +21,22 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
+  // console.log(state);
+  let tempProfile = state.firebase.profile && state.firebase.profile.isEmpty ? state.firebase.auth : state.firebase.profile
+  let uid = tempProfile.uid ? tempProfile.uid : tempProfile.UID
+  let stars = []
+  if(state.firestore.data.users){
+    let temp = _.values(state.firestore.data.users)
+    let myInfo = temp.find((item) => {
+      return uid === item.UID
+    })
+    if(myInfo){
+      stars = myInfo.stars
+    }
+  }
   return{
-
+    myUID: uid,
+    stars: stars
   }
 }
 
@@ -52,11 +67,11 @@ class User extends Component {
   }
 
   UNSAFE_componentWillReceiveProps(props){
-    if(props.match && props.match.params.id === this.props.user.UID){
+    if(props.match && props.match.params.id === props.user.UID){
       this.setState({
         active: true
       })
-      this.props.updateUserChatInfo({name: this.props.user.display_name, uid: this.props.user.UID})
+      this.props.updateUserChatInfo({name: props.user.display_name, uid: props.user.UID})
     }
     else{
       this.setState({
@@ -65,8 +80,51 @@ class User extends Component {
     }
   }
 
-  render() {
+  handleStar(){
+    const {firestore} = this.props
     const {user} = this.props
+    firestore.get({collection: 'users', where: ['UID', '==', this.props.myUID]}).then((data) => {
+      if(data.docs.length){
+        let myInfo = data.docs[0].data()
+        if(myInfo.stars){
+          let temp = myInfo.stars
+          let isUpdate = false
+          for(let i = 0; i < temp.length; i++){
+            if(user.UID === temp[i].UID){
+              temp[i].isStar = !temp[i].isStar
+              isUpdate = true
+              break;
+            }
+          }
+
+          if(!isUpdate){
+            temp.push({
+              UID: user.UID,
+              isStar: true
+            })
+          }
+
+          let idDoc = data.docs[0].id
+          firestore.update({collection: 'users', doc: idDoc}, {stars: temp})
+        }
+        else{
+          let idDoc = data.docs[0].id
+          firestore.update({collection: 'users', doc: idDoc}, {stars: [{UID: user.UID, isStar: true}]})
+        }
+      }
+    })
+  }
+
+  render() {
+    // console.log(this.props);
+    const {user} = this.props
+    const {stars} = this.props
+    let star = (<span className="star" onClick={this.handleStar.bind(this)}><Icon icon={starO} size={20} style={{color: 'white'}}/></span>)
+    for(let i = 0; i < stars.length; i++){
+      if(stars[i].UID === user.UID && stars[i].isStar){
+        star = (<span className="star" onClick={this.handleStar.bind(this)}><Icon icon={ic_star} size={20} style={{color: 'white'}}/></span>)
+      }
+    }
     return (
       <div className={styles.user}>
         <Link to={"/chatwith/" + user.UID}>
@@ -81,7 +139,7 @@ class User extends Component {
                 }
               </div>
               </div>
-              <span className="star"><Icon icon={starO} size={20} style={{color: 'white'}}/></span>
+              {star}
             </li>
         </Link>
       </div>

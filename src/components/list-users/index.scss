@@ -18,7 +18,7 @@
       padding: 10px;
       color: white;
       background: #6A6C75;
-      width: 90%;
+      width: 70%;
       font-size: 17px;
       padding-right: 30px
     }
@@ -26,6 +26,22 @@
     .fa-search {
       position: relative;
       left: -25px;
+      cursor: pointer;
+    }
+
+    .btn-reset{
+      background: #6A6C75;
+      color: white;
+      font-size: 14px;
+      padding: 9px 15px;
+      position: relative;
+      top: -2px;
+      &:hover{
+        background: #84868F; 
+      }
+      &:focus{
+        box-shadow: none;
+      }
     }
 
     ul {

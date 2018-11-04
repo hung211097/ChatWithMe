@@ -7,6 +7,8 @@ import { accountStatus } from '../../constants/localStorage'
 import UsersList from '../../components/list-users'
 import ChatBox from '../../components/chat-box'
 import { updateStatus } from '../../actions'
+import {firestoreConnect} from 'react-redux-firebase'
+import {compose} from 'redux'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -52,4 +54,9 @@ class Home extends Component {
   }
 }
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Home));
+export default withRouter(
+  compose(
+    firestoreConnect(['users', 'chatbox']),
+    connect(mapStateToProps, mapDispatchToProps)
+  )(Home)
+);

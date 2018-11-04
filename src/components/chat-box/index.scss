@@ -179,6 +179,7 @@
     .chat-message {
       padding: 30px;
       padding-bottom: 10px;
+      padding-top: 10px;
       textarea {
         width: 100%;
         border: none;
@@ -187,6 +188,7 @@
         margin-bottom: 10px;
         border-radius: 5px;
         resize: none;
+        height: 130px;
       }
 
       .fa-file-image-o,
@@ -212,6 +214,10 @@
       }
       .file{
         margin-right: 10px;
+        cursor: pointer;
+      }
+      .fileImage{
+        cursor: pointer;
       }
     }
   }

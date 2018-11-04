@@ -12,7 +12,7 @@ import {fileO} from 'react-icons-kit/fa/fileO'
 import logo from '../../images/logoNav2.png'
 import defaulAvatar from '../../images/default-avatar.png'
 import ClickOutside from '../../components/click-outside'
-import {withFirestore, firestoreConnect} from 'react-redux-firebase'
+import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
 import _ from 'lodash'
 import {connectStringID, formatDate} from '../../services/utils.services'
@@ -160,8 +160,7 @@ class ChatBox extends Component {
   }
 
   render() {
-    // console.log("PROPS", this.props);
-    // console.log("COMPONENT", this.state);
+    // console.log(this.props);
     const {profile} = this.props
     const uid = profile.uid ? profile.uid : profile.UID
     const display_name = profile.display_name ? profile.display_name : profile.displayName
@@ -234,12 +233,12 @@ class ChatBox extends Component {
             <form onSubmit={this.handleOnSubmit.bind(this)}>
               <textarea name="message-to-send" id="message-to-send" placeholder="Nhập tin nhắn" rows={3}
                 defaultValue="" onKeyPress={this.handleKeyPress.bind(this)}/>
-              <a className="file" href="/">
+              <span className="file">
                 <Icon icon={fileO} size={18} />
-              </a>
-              <a className="fileImage" href="/">
+              </span>
+              <span className="fileImage">
                 <Icon icon={fileImageO} size={18} /> &nbsp;&nbsp;&nbsp;
-              </a>
+              </span>
               <button type="button" onClick={this.handleOnSubmit.bind(this)}>Gửi</button>
             </form>
           </div>
@@ -253,7 +252,6 @@ class ChatBox extends Component {
 export default withRouter(
   compose(
     withFirestore,
-    firestoreConnect(['users', 'chatbox']),
     connect(mapStateToProps, mapDispatchToProps)
   )(ChatBox)
 );
