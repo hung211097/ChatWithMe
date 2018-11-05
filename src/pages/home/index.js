@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import styles from'./index.scss';
+import styles from './index.scss';
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import { saveItem, loadItem } from '../../services/localStorage.services'
 import { accountStatus } from '../../constants/localStorage'
-import UsersList from '../../components/list-users'
-import ChatBox from '../../components/chat-box'
+import {UsersList, ChatBox} from '../../components'
 import { updateStatus } from '../../actions'
 import {firestoreConnect} from 'react-redux-firebase'
 import {compose} from 'redux'
@@ -40,10 +39,8 @@ class Home extends Component {
   }
 
   render() {
-    // console.log(this.props);
     return (
       <div className={styles.homePage}>
-        {/*<button className="btn btn-primary" onClick={this.handleLogout.bind(this)}>Đăng xuất</button>*/}
         <div className="container-app clearfix">
           <UsersList />
           <ChatBox />

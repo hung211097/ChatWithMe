@@ -182,37 +182,39 @@ export const sendMessage = (data, callback) => {
           let stream = storageRef.child(`images/${new Date().getTime()}`).put(item)
           imagesStream.push(stream)
         })
-        Promise.all(imagesStream).then((allUrls) => {
-          allUrls.forEach((item) => {
-            item.ref.getDownloadURL().then((url) => {
-              tempImages.push(url)
-            })
+        Promise.all(imagesStream).then((allRef) => {
+          imagesStream = []
+          allRef.forEach((item) => {
+            imagesStream.push(item.ref.getDownloadURL())
           })
-          // console.log(tempImages);
         }).then(() => {
-          arr.push({
-            belongTo: uid,
-            chatAt: date.toString(),
-            content: content,
-            images: tempImages
-          })
-          console.log(arr);
-          firestore.get({collection: 'chatbox', where: ['id', '==', connectString]}).then((dataFirestore) => {
-            if(dataFirestore.docs.length){
-              let id = dataFirestore.docs[0].id
-              firestore.update({collection: 'chatbox', doc: id}, {lastChatAt: date.toString(), messages: arr}).then(() => {
-                callback()
-              })
-            }
-            else{
-              firestore.collection('chatbox').doc(connectString).set({
-                id: connectString,
-                lastChatAt: date.toString(),
-                messages: arr
-              })
-            }
-          })
-        }).catch(e => console.log(e))
+          Promise.all(imagesStream).then((allurls) => {
+            tempImages = allurls
+          }).then(() => {
+            arr.push({
+              belongTo: uid,
+              chatAt: date.toString(),
+              content: content,
+              images: tempImages
+            })
+            console.log(arr);
+            firestore.get({collection: 'chatbox', where: ['id', '==', connectString]}).then((dataFirestore) => {
+              if(dataFirestore.docs.length){
+                let id = dataFirestore.docs[0].id
+                firestore.update({collection: 'chatbox', doc: id}, {lastChatAt: date.toString(), messages: arr}).then(() => {
+                  callback()
+                })
+              }
+              else{
+                firestore.collection('chatbox').doc(connectString).set({
+                  id: connectString,
+                  lastChatAt: date.toString(),
+                  messages: arr
+                })
+              }
+            })
+          }).catch(e => console.log(e))
+        })
       }
       else{
         arr.push({

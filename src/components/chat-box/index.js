@@ -11,7 +11,7 @@ import {fileImageO} from 'react-icons-kit/fa/fileImageO'
 import {fileO} from 'react-icons-kit/fa/fileO'
 import logo from '../../images/logoNav2.png'
 import defaulAvatar from '../../images/default-avatar.png'
-import ClickOutside from '../../components/click-outside'
+import {ClickOutside, SlickLightbox} from '../../components'
 import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
 import _ from 'lodash'
@@ -220,12 +220,23 @@ class ChatBox extends Component {
                         }
                       </div>
                       <div className={uid === item.belongTo ? "message my-message float-right" : "message other-message"}>
-                        {item.content ? item.content : null}
-                        {item.images && !!item.images.length && item.images.map((img, key) => {
+                        {item.content ?
+                          <p>{item.content}</p>
+                          : null
+                        }
+                        {/*{item.images && !!item.images.length && item.images.map((img, key) => {
                             return(
                               <img src={img} alt="message-img" />
                             )
                           })
+                        }*/}
+                        {item.images && !!item.images.length && item.images.length > 1 &&
+                          <SlickLightbox images={item.images} />
+                        }
+                        {item.images && item.images.length === 1 &&
+                          <p>
+                            <img src={item.images[0]} alt="message-img" style={{height: '200px', width: '200px'}}/>
+                          </p>
                         }
                       </div>
                     </li>

@@ -7,7 +7,7 @@ import { Icon } from 'react-icons-kit'
 import {search} from 'react-icons-kit/fa/search'
 import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
-import User from '../user'
+import {User} from '../../components'
 import _ from 'lodash'
 import {compareDateReverse} from '../../services/utils.services'
 
