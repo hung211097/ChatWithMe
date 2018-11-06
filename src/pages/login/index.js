@@ -24,7 +24,6 @@ const mapDispatchToProps = (dispatch) => {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return{
     auth_status: state.auth.auth_status,
     notLogged: state.firebase.auth.isEmpty

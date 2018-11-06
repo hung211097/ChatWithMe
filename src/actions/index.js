@@ -129,8 +129,10 @@ export const updateStatus = () => {
         value = Object.entries(value)
         value.forEach((item) => {
           firestore.get({collection: 'users', where: [['UID', '==', item[0]]]}).then((data) => {
-            let id = data.docs[0].id
-            firestore.update({collection: 'users', doc: id}, {status: "online"})
+            if(data.docs.length){
+              let id = data.docs[0].id
+              firestore.update({collection: 'users', doc: id}, {status: "online"})
+            }
           })
         })
         userLastConnectedRef.remove()
@@ -144,8 +146,10 @@ export const updateStatus = () => {
         value = Object.entries(value)
         value.forEach((item) => {
           firestore.get({collection: 'users', where: [['UID', '==', item[0]]]}).then((data) => {
-            let id = data.docs[0].id
-            firestore.update({collection: 'users', doc: id}, {status: "offline", endAt: item[1].endAt})
+            if(data.docs.length){
+              let id = data.docs[0].id
+              firestore.update({collection: 'users', doc: id}, {status: "offline", endAt: item[1].endAt})
+            }
           })
         })
       }
@@ -165,7 +169,7 @@ export const sendMessage = (data, callback) => {
     const firestore = getFirestore()
     const firebase = getFirebase()
     let uid = firebase.auth().O
-    // console.log(data);
+    console.log(data);
     if(data.content || data.files.length){
       let arr = data.messages
       let date = new Date()
@@ -179,7 +183,8 @@ export const sendMessage = (data, callback) => {
         let storageRef = storage.ref()
         let imagesStream = []
         data.files.forEach((item) =>{
-          let stream = storageRef.child(`images/${new Date().getTime()}`).put(item)
+          let randomString = Math.random().toString(36).slice(2)
+          let stream = storageRef.child(`images/${new Date().getTime() + '_' + randomString + '.' + item.type.replace('image/', '')}`).put(item, {contentType: 'image/*'})
           imagesStream.push(stream)
         })
         Promise.all(imagesStream).then((allRef) => {
@@ -187,17 +192,17 @@ export const sendMessage = (data, callback) => {
           allRef.forEach((item) => {
             imagesStream.push(item.ref.getDownloadURL())
           })
-        }).then(() => {
+        })
+        .then(() => {
           Promise.all(imagesStream).then((allurls) => {
-            tempImages = allurls
-          }).then(() => {
+            // console.log(allurls);
             arr.push({
               belongTo: uid,
               chatAt: date.toString(),
               content: content,
-              images: tempImages
+              images: allurls
             })
-            console.log(arr);
+            // console.log(arr);
             firestore.get({collection: 'chatbox', where: ['id', '==', connectString]}).then((dataFirestore) => {
               if(dataFirestore.docs.length){
                 let id = dataFirestore.docs[0].id
@@ -213,7 +218,7 @@ export const sendMessage = (data, callback) => {
                 })
               }
             })
-          }).catch(e => console.log(e))
+          })
         })
       }
       else{
