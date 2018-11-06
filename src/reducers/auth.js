@@ -1,7 +1,7 @@
 import {actionTypes} from '../constants/actionType'
 
 const initialState = {
-  auth_status: null
+  auth_status: null,
 }
 
 export default (state = initialState, action) => {
@@ -35,11 +35,6 @@ export default (state = initialState, action) => {
       return{
         ...state,
         auth_status: 'success'
-      }
-    case actionTypes.SERVER_ERROR:
-      return{
-        ...state,
-        server_status: 'error'
       }
     default:
       return state

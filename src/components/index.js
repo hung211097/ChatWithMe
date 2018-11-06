@@ -1,8 +1,13 @@
-import Header from './header'
-import Footer from './footer'
-
+import UsersList from './list-users'
+import ChatBox from './chat-box'
+import User from './user'
+import ClickOutside from './click-outside'
+import SlickLightbox from './slick-lightbox'
 
 export {
-  Header,
-  Footer
+  UsersList,
+  ChatBox,
+  User,
+  ClickOutside,
+  SlickLightbox
 }

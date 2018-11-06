@@ -1,4 +1,6 @@
 @import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+@import "~slick-carousel/slick/slick.css";
+@import "~slick-carousel/slick/slick-theme.css";
 
 html {
     height:100%;
@@ -75,4 +77,48 @@ img{
     top: 22% !important;
     left: 5% !important;
   }
+}
+
+.tag{
+  position: relative;
+  padding: 5px 30px 0;
+  height: 100%;
+  border-radius: .25rem;
+  color: #383d41;
+  background-color: #e2e3e5;
+  border-color: #d6d8db;
+  transition: opacity .15s linear;
+  display: inline-flex;
+  margin-left: 10px;
+  align-items: center;
+}
+
+.tag:first-child{
+  margin-left: 0;
+}
+
+.tag .close-x{
+  cursor: pointer;
+  position: absolute;
+  top: 2px;
+  right: 4px;
+  padding: 0;
+  color: inherit;
+  float: right;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #000 !important;
+  background: transparent !important;
+  text-shadow: 0 1px 0 #fff;
+  opacity: .5;
+  font-size: 14px;
+}
+
+.tag .close span{
+  font-size: 20px;
+}
+
+.tag p{
+  margin: 0;
 }

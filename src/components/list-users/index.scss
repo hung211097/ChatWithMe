@@ -1,0 +1,118 @@
+@import '../../styles/variables';
+
+:local(.userListComponent) {
+  font: 14px/20px "Lato", Arial, sans-serif;
+
+  .people-list {
+    width: 26%;
+    float: left;
+    height: 100vh;
+    .search {
+      padding: 14px 20px;
+      border-bottom: 1px solid grey;
+    }
+
+    input {
+      border-radius: 3px;
+      border: none;
+      padding: 10px;
+      color: white;
+      background: #6A6C75;
+      width: 70%;
+      font-size: 17px;
+      padding-right: 30px
+    }
+
+    .fa-search {
+      position: relative;
+      left: -25px;
+      cursor: pointer;
+    }
+
+    .btn-reset{
+      background: #6A6C75;
+      color: white;
+      font-size: 14px;
+      padding: 9px 15px;
+      position: relative;
+      top: -2px;
+      &:hover{
+        background: #84868F; 
+      }
+      &:focus{
+        box-shadow: none;
+      }
+    }
+
+    ul {
+      padding: 0px;
+      overflow-y: auto;
+      height: 89%;
+    }
+  }
+
+  .me,
+  .offline,
+  .online {
+    margin-right: 3px;
+    font-size: 10px;
+  }
+
+  .online {
+    color: $green;
+  }
+
+  .offline {
+    color: $orange;
+  }
+
+  .me {
+    color: $blue;
+  }
+
+  .align-left {
+    text-align: left;
+  }
+
+  .align-right {
+    text-align: right;
+  }
+
+  .float-right {
+    float: right;
+  }
+
+  .clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+
+  ul{
+    list-style: none;
+    margin: 0;
+  }
+  .circle{
+    width: 8px;
+    height: 8px;
+    background: black;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 2px;
+    &.online{
+      background: #9DF57A;
+    }
+    &.offline{
+      background: #E38968;
+    }
+    &.me{
+      background: $main-color;
+    }
+    &.other{
+      background: #444753;
+    }
+  }
+}

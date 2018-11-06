@@ -1,0 +1,16 @@
+:local(.slickLightbox) {
+  padding: 10px 0 30px;
+  span{
+    cursor: pointer;
+  }
+  .slick-dots{
+    bottom: -35px !important;
+  }
+
+  .slick-slide img {
+    display: block;
+    padding: 0px 10px;
+    height: 200px;
+    width: 248px;
+  }
+}

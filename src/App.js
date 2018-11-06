@@ -13,6 +13,7 @@ class App extends Component {
           <Switch>
             <Redirect from='/home' to='/' />
             <Route exact path='/' component={Home} />
+            <Route exact path='/chatwith/:id' component={Home} />
             <Route exact path='/login' component={Login} />
             <Route exact path='/register' component={Register} />
           </Switch>

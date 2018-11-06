@@ -1,0 +1,113 @@
+@import '../../styles/variables';
+
+:local(.user) {
+  font: 14px/20px "Lato", Arial, sans-serif;
+  li {
+    cursor: pointer;
+    padding: 10px 20px;
+    position: relative;
+    &:hover{
+      background: #aeaeae4d;
+    }
+    &.active{
+      background: #3C98BF;
+      .status{
+        color: white;
+      }
+    }
+    .star{
+      position: absolute;
+      right: 30px;
+      top: 20px;
+      cursor: pointer;
+    }
+    img{
+      max-width: 19%;
+      float: left;
+      border-radius: 50%;
+    }
+
+    .about {
+      float: left;
+      margin-top: 8px;
+    }
+
+    .about {
+      padding-left: 8px;
+    }
+
+    .name{
+      color: white;
+      font-weight: bold;
+    }
+
+    .status {
+      color: $gray;
+      font-weight: bold;
+    }
+    .atTime{
+      font-size: 13px;
+    }
+  }
+
+  .me,
+  .offline,
+  .online {
+    margin-right: 3px;
+    font-size: 10px;
+  }
+
+  .online {
+    color: $green;
+  }
+
+  .offline {
+    color: $orange;
+  }
+
+  .me {
+    color: $blue;
+  }
+
+  .align-left {
+    text-align: left;
+  }
+
+  .align-right {
+    text-align: right;
+  }
+
+  .float-right {
+    float: right;
+  }
+
+  .clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+
+  .circle{
+    width: 8px;
+    height: 8px;
+    background: black;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 2px;
+    &.online{
+      background: #9DF57A;
+    }
+    &.offline{
+      background: #E38968;
+    }
+    &.me{
+      background: $main-color;
+    }
+    &.other{
+      background: #444753;
+    }
+  }
+}
