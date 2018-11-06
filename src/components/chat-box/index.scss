@@ -183,6 +183,7 @@
       padding: 30px;
       padding-bottom: 10px;
       padding-top: 10px;
+      position: relative;
       textarea {
         width: 100%;
         border: none;
@@ -197,7 +198,7 @@
         display: block;
       }
       .image-box{
-        width: 85%;
+        width: 90%;
         display: inline-block;
         height: auto;
         position: relative;
@@ -306,5 +307,13 @@
     &.other{
       background: #444753;
     }
+  }
+
+  .btn-send{
+    position: absolute;
+    top: 23px;
+    right: 31px;
+    z-index: 9;
+    background: transparent;
   }
 }

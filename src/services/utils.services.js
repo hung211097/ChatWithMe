@@ -26,3 +26,51 @@ export function formatDate(date, name='DD/MM/YYYY') {
 export function compareDateReverse(dateLeft, dateRight){
   return compareDesc(new Date(dateLeft), new Date(dateRight))
 }
+
+export function transferToImage(htmlText){
+  let regex = /<a\s+(?:[^>]*?\s+)?href="([^"]+\?[^"]+)/g
+  let arrLink = []
+  let match = null
+  while((match = regex.exec(htmlText)) !== null){
+    arrLink.push({url: match[0], isImage: false})
+  }
+  console.log(htmlText);
+  // console.log(arrLink);
+  if(!arrLink.length){
+    return htmlText
+  }
+
+  for(let i = 0; i < arrLink.length; i++){
+    arrLink[i].url = arrLink[i].url.replace(`<a href="`, '')
+  }
+  console.log(arrLink);
+
+  arrLink.forEach((item) => {
+    if(detectImageLink(item.url)){
+      item.isImage = true
+    }
+  })
+
+  let arrTagA = []
+  match = null
+  let regexSecond = /<a[\s]+([^>]+)>((?:.(?!\<\/a\>))*.)<\/a>/g
+  while((match = regexSecond.exec(htmlText)) !== null){
+    arrTagA.push(match[0])
+  }
+
+  arrTagA.forEach((item, key) => {
+    if(arrLink[key].isImage){
+      htmlText = htmlText.replace(item, `<img src="${arrLink[key].url}" alt="message-img"/>`)
+    }
+  })
+
+  return htmlText
+}
+
+function detectImageLink(string){
+  let regex = /(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/gi
+  if(regex.test(string)){
+    return true
+  }
+  return false
+}
