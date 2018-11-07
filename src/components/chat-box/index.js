@@ -47,7 +47,8 @@ const mapStateToProps = (state) => {
 class ChatBox extends Component {
   static propTypes = {
     profile: PropTypes.object,
-    toggleSidebar: PropTypes.func
+    toggleSidebar: PropTypes.func,
+    showSidebar: PropTypes.bool
   }
 
   constructor(props){
@@ -174,7 +175,7 @@ class ChatBox extends Component {
     const display_name = profile.display_name ? profile.display_name : profile.displayName
     return (
       <div className={styles.chatbox}>
-        <div className="chat">
+        <div className={this.props.showSidebar ? "d-none" : "chat" }>
           <div className="chat-header clearfix">
             <div className="logo">
               <img src={logo} alt="logo" />
