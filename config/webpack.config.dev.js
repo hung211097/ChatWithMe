@@ -320,22 +320,6 @@ module.exports = {
               name: 'static/media/[name].[hash:8].[ext]',
             },
           },
-          {
-            test: /\.woff(\?v=\d+\.\d+\.\d+)?$/,
-            use: "url-loader?limit=10000&mimetype=application/font-woff"
-          }, {
-            test: /\.woff2(\?v=\d+\.\d+\.\d+)?$/,
-            use: "url-loader?limit=10000&mimetype=application/font-woff"
-          }, {
-            test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/,
-            use: "url-loader?limit=10000&mimetype=application/octet-stream"
-          }, {
-            test: /\.eot(\?v=\d+\.\d+\.\d+)?$/,
-            use: "file-loader"
-          }, {
-            test: /\.svg(\?v=\d+\.\d+\.\d+)?$/,
-            use: "url-loader?limit=10000&mimetype=image/svg+xml"
-          },
         ],
       },
       // ** STOP ** Are you adding a new loader?
@@ -383,10 +367,6 @@ module.exports = {
       fileName: 'asset-manifest.json',
       publicPath: publicPath,
     }),
-    new webpack.ProvidePlugin({
-      $: "jquery",
-      jQuery: "jquery"
-    })
   ],
 
   // Some libraries import Node modules but don't use them in the browser.

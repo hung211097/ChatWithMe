@@ -11,6 +11,9 @@
     border-bottom-right-radius: 5px;
     color: #434651;
     height: 100vh;
+    @media screen and (max-width: 576px){
+      width: 100%;
+    }
     .chat-header {
       padding: 10px 20px;
       border-bottom: 2px solid white;
@@ -22,6 +25,9 @@
           max-width: 100%;
           position: relative;
           top: -7px;
+          @media screen and (max-width: 576px){
+            display: none;
+          }
         }
       }
       .current-user{
@@ -30,6 +36,10 @@
         float: right;
         cursor: pointer;
         transition: 0.2s all;
+        @media screen and (max-width: 576px){
+          top: 3px;
+          right: -10px
+        }
         &:hover{
           background: #73CCF3;
         }
@@ -43,11 +53,18 @@
           margin-left: 5px;
           position: relative;
           top: 4px;
+          @media screen and (max-width: 576px){
+            font-size: 17px;
+            top: 1px;
+          }
         }
         img {
           float: right;
           width: 50px;
           border-radius: 50%;
+          @media screen and (max-width: 576px){
+            width: 40px;
+          }
         }
         .dropdown-user{
           position: absolute;
@@ -127,7 +144,11 @@
       border-bottom: 2px solid white;
       overflow-y: scroll;
       height: 58%;
-
+      ul{
+        @media screen and (max-width: 576px){
+          padding: 0 !important;
+        }
+      }
       .message-data {
         margin-bottom: 15px;
       }
@@ -146,9 +167,15 @@
         margin-bottom: 30px;
         width: 60%;
         position: relative;
+        @media screen and (max-width: 576px){
+          width: 90%;
+        }
         p{
           padding-left: 10px;
           word-wrap: break-word;
+        }
+        a{
+          color: yellow;
         }
         &:after {
           bottom: 100%;
@@ -175,6 +202,9 @@
         &:after {
           border-bottom-color: $main-color;
           left: 93%;
+          @media screen and (max-width: 576px){
+            left: 85%;
+          }
         }
       }
     }
@@ -198,11 +228,15 @@
         display: block;
       }
       .image-box{
-        width: 90%;
+        width: 85%;
         display: inline-block;
         height: auto;
         position: relative;
         margin-left: 20px;
+        @media screen and (max-width: 576px){
+          margin-left: 0;
+          width: 100%;
+        }
         .preview-box{
           display: flex;
           height: 47px;
@@ -308,12 +342,15 @@
       background: #444753;
     }
   }
-
-  .btn-send{
-    position: absolute;
-    top: 23px;
-    right: 31px;
-    z-index: 9;
-    background: transparent;
+  .btn-toggle{
+    background: white;
+    margin-top: 5px;
   }
+  // .btn-send{
+  //   position: absolute;
+  //   top: 23px;
+  //   right: 31px;
+  //   z-index: 9;
+  //   background: transparent !important;
+  // }
 }

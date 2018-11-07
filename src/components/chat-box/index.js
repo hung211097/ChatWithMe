@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { logout, sendMessage } from '../../actions'
 import { Icon } from 'react-icons-kit'
-import {signOut, info, fileImageO, fileO, send} from 'react-icons-kit/fa'
+import {signOut, info, fileImageO, fileO, send, bars} from 'react-icons-kit/fa'
 import logo from '../../images/logoNav2.png'
 import defaulAvatar from '../../images/default-avatar.png'
 import {ClickOutside, SlickLightbox} from '../../components'
@@ -14,15 +14,6 @@ import {compose} from 'redux'
 import _ from 'lodash'
 import {connectStringID, formatDate, transferToImage} from '../../services/utils.services'
 import ReactTooltip from 'react-tooltip'
-import {config} from '../../config/froalaConfig'
-// Require Editor JS files.
-import 'froala-editor/js/froala_editor.pkgd.min.js';
-// Require Editor CSS files.
-import 'froala-editor/css/froala_style.min.css';
-import 'froala-editor/css/froala_editor.pkgd.min.css';
-// Require Font Awesome.
-import 'font-awesome/css/font-awesome.css';
-import FroalaEditor from 'react-froala-wysiwyg';
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -56,6 +47,7 @@ const mapStateToProps = (state) => {
 class ChatBox extends Component {
   static propTypes = {
     profile: PropTypes.object,
+    toggleSidebar: PropTypes.func
   }
 
   constructor(props){
@@ -112,7 +104,7 @@ class ChatBox extends Component {
   }
 
   handleOnSubmit(){
-    if(this.state.content || this.state.files.length){
+    if((this.state.content || this.state.files.length) && this.props.match.params && this.props.match.params.id){
       this.props.sendMessage(
         {messages: this.state.messages, content: transferToImage(this.state.content), files: this.state.files, infoUser: this.props.infoUser},
         () => {this.scrollToBottom()}
@@ -171,6 +163,10 @@ class ChatBox extends Component {
     });
   }
 
+  handleShowSidebar(){
+    this.props.toggleSidebar && this.props.toggleSidebar()
+  }
+
   render() {
     // console.log(this.state);
     const {profile} = this.props
@@ -182,6 +178,9 @@ class ChatBox extends Component {
           <div className="chat-header clearfix">
             <div className="logo">
               <img src={logo} alt="logo" />
+              <button type="button" className="btn btn-toggle d-sm-none d-block" onClick={this.handleShowSidebar.bind(this)}>
+                <span><Icon icon={bars} size={22} style={{color: '#4EBDEB', position: 'relative', top: '-2px'}}/></span>
+              </button>
             </div>
             <div className="current-user" onClick={this.handleShowDropdown.bind(this)}>
               <h3>{display_name}</h3>
@@ -257,14 +256,8 @@ class ChatBox extends Component {
           {/* end chat-history */}
           <div className="chat-message clearfix">
             <form onSubmit={this.handleOnSubmit.bind(this)}>
-              {/*<textarea name="message-to-send" id="message-to-send" placeholder="Nhập tin nhắn" rows={3}
-                defaultValue="" onKeyPress={this.handleKeyPress.bind(this)}/>*/}
-                <FroalaEditor
-                  tag='textarea'
-                  config={config}
-                  model={this.state.content}
-                  onModelChange={this.handleModelChange.bind(this)}
-                />
+              <textarea name="message-to-send" id="message-to-send" placeholder="Nhập tin nhắn" rows={3}
+                defaultValue="" onKeyPress={this.handleKeyPress.bind(this)}/>
               <span className="media">
                 <span className="file">
                   <Icon icon={fileO} size={18} />
@@ -273,6 +266,11 @@ class ChatBox extends Component {
                   <Icon icon={fileImageO} size={18} /> &nbsp;&nbsp;&nbsp;
                   <input id="image-upload" type="file" multiple accept="image/*" onChange={this.handleOnSelectFile.bind(this)} style={{display: "none"}}/>
                 </label>
+                <span className="d-sm-none d-block">
+                  <button type="button" className="btn-send" onClick={this.handleOnSubmit.bind(this)}>
+                    <Icon icon={send} size={24} style={{background: 'transparent !important', color: '#4EBDEB'}}/>
+                  </button>
+                </span>
                 <div className="image-box">
                   <div className="preview-box">
                     {this.state.files && this.state.files.map((item, key) => {
@@ -288,7 +286,7 @@ class ChatBox extends Component {
                     }
                   </div>
                 </div>
-                <button type="button" className="btn-send" onClick={this.handleOnSubmit.bind(this)}>
+                <button type="button" className="btn-send d-sm-block d-none" onClick={this.handleOnSubmit.bind(this)}>
                   <Icon icon={send} size={24} style={{background: 'transparent !important', color: '#4EBDEB'}}/>
                 </button>
               </span>

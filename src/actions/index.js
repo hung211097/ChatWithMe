@@ -169,7 +169,6 @@ export const sendMessage = (data, callback) => {
     const firestore = getFirestore()
     const firebase = getFirebase()
     let uid = firebase.auth().O
-    console.log(data);
     if(data.content || data.files.length){
       let arr = data.messages
       let date = new Date()
@@ -195,14 +194,12 @@ export const sendMessage = (data, callback) => {
         })
         .then(() => {
           Promise.all(imagesStream).then((allurls) => {
-            // console.log(allurls);
             arr.push({
               belongTo: uid,
               chatAt: date.toString(),
               content: content,
               images: allurls
             })
-            // console.log(arr);
             firestore.get({collection: 'chatbox', where: ['id', '==', connectString]}).then((dataFirestore) => {
               if(dataFirestore.docs.length){
                 let id = dataFirestore.docs[0].id

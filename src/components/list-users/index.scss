@@ -7,9 +7,26 @@
     width: 26%;
     float: left;
     height: 100vh;
+    position: relative;
+    transition: 0.4s ease-in-out;
+    @media screen and (max-width: 576px){
+      width: 0%;
+      left: -100%;
+      overflow: auto;
+      &.show{
+        width: 100%;
+        left: 0;
+      }
+    }
     .search {
       padding: 14px 20px;
       border-bottom: 1px solid grey;
+      @media screen and (max-width: 576px){
+        position: fixed;
+        z-index: 99999999;
+        background: #444753;
+        width: 100%;
+      }
     }
 
     input {
@@ -37,7 +54,7 @@
       position: relative;
       top: -2px;
       &:hover{
-        background: #84868F; 
+        background: #84868F;
       }
       &:focus{
         box-shadow: none;
@@ -48,6 +65,11 @@
       padding: 0px;
       overflow-y: auto;
       height: 89%;
+      @media screen and (max-width: 576px){
+        overflow-y: none;
+        height: 100%;
+        margin-top: 140px;
+      }
     }
   }
 
@@ -113,6 +135,18 @@
     }
     &.other{
       background: #444753;
+    }
+  }
+  .btn-toggle{
+    background: white;
+    padding-left: 10px;
+  }
+  .logo-mobile{
+    display: block;
+    margin-bottom: 5px;
+    span{
+      display: inline-block;
+      margin-left: 20px;
     }
   }
 }

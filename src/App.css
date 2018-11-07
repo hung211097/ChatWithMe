@@ -93,6 +93,14 @@ img{
   align-items: center;
 }
 
+@media screen and (max-width: 576px){
+  .tag{
+    padding: 0px 30px 0;
+    height: 70%;
+    margin-top: 5px;
+  }
+}
+
 .tag:first-child{
   margin-left: 0;
 }
@@ -121,77 +129,4 @@ img{
 
 .tag p{
   margin: 0;
-}
-
-.fa-search::before {
-  content: "" !important;
-}
-
-#fullscreen-1,
-#strikeThrough-1,
-#subscript-1,
-#superscript-1,
-#fontFamily-1,
-#dropdown-menu-fontFamily-1,
-#fontSize-1,
-#dropdown-menu-fontSize-1,
-#inlineClass-1,
-#inlineStyle-1,
-#dropdown-menu-inlineStyle-1,
-#paragraphStyle-1,
-#dropdown-menu-paragraphStyle-1,
-#lineHeight-1,
-#dropdown-menu-lineHeight-1,
-#paragraphFormat-1,
-#dropdown-menu-paragraphFormat-1,
-#align-1,
-#dropdown-menu-align-1,
-#outdent-1,
-#indent-1,
-#quote-1,
-#formatOL-1,
-#formatOLOptions-1,
-#dropdown-menu-formatOLOptions-1,
-.fr-btn-wrap,
-#insertLink-1,
-#insertImage-1,
-#insertVideo-1,
-#insertFile-1,
-#insertTable-1,
-#insertHR-1,
-#print-1,
-#getPDF-1,
-#help-1,
-#html-1,
-.fr-quick-insert,
-.fr-separator.fr-hs,
-.fr-separator.fr-vs
-{
-  display: none !important;
-}
-
-.fr-toolbar .fr-command.fr-btn{
-  float: left !important;
-  color: #4EBDEB !important;
-}
-
-.fr-box{
-  margin-bottom: 10px;
-}
-.fr-box.fr-basic .fr-element{
-  overflow: auto;
-  height: 80px;
-}
-
-.fr-popup{
-  overflow: auto;
-  height: 100px;
-  width: 260px;
-}
-
-.fr-emoticon{
-  background-repeat: no-repeat;
-  height: 22px;
-  width: 22px;
-  display: inline-block;
 }

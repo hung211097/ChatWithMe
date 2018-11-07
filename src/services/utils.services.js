@@ -1,6 +1,7 @@
 import {formatDistance, compareDesc} from 'date-fns'
 import locale from 'date-fns/locale/vi'
 import format from 'date-fns/format'
+import isImageUrl from'is-image-url';
 
 export function fromNowTimeStamp(timestamp) {
   let date = new Intl.DateTimeFormat('en-US', {year: 'numeric', month: '2-digit',day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit'}).format(timestamp)
@@ -28,49 +29,30 @@ export function compareDateReverse(dateLeft, dateRight){
 }
 
 export function transferToImage(htmlText){
-  let regex = /<a\s+(?:[^>]*?\s+)?href="([^"]+\?[^"]+)/g
+  let regex = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g
   let arrLink = []
   let match = null
   while((match = regex.exec(htmlText)) !== null){
     arrLink.push({url: match[0], isImage: false})
   }
-  console.log(htmlText);
-  // console.log(arrLink);
+
   if(!arrLink.length){
     return htmlText
   }
 
-  for(let i = 0; i < arrLink.length; i++){
-    arrLink[i].url = arrLink[i].url.replace(`<a href="`, '')
-  }
-  console.log(arrLink);
-
   arrLink.forEach((item) => {
-    if(detectImageLink(item.url)){
+    if(isImageUrl(item.url)){
       item.isImage = true
     }
   })
 
-  let arrTagA = []
-  match = null
-  let regexSecond = /<a[\s]+([^>]+)>((?:.(?!\<\/a\>))*.)<\/a>/g
-  while((match = regexSecond.exec(htmlText)) !== null){
-    arrTagA.push(match[0])
-  }
-
-  arrTagA.forEach((item, key) => {
-    if(arrLink[key].isImage){
-      htmlText = htmlText.replace(item, `<img src="${arrLink[key].url}" alt="message-img"/>`)
+  arrLink.forEach((item) => {
+    if(item.isImage){
+      htmlText = htmlText.replace(item.url, `<a href="${item.url}"><img src="${item.url}" alt="message-img"/></a>`)
+    }
+    else{
+      htmlText = htmlText.replace(item.url, `<a href="${item.url}" target="_blank">${item.url}</a>`)
     }
   })
-
   return htmlText
-}
-
-function detectImageLink(string){
-  let regex = /(http)?s?:?(\/\/[^"']*\.(?:png|jpg|jpeg|gif|png|svg))/gi
-  if(regex.test(string)){
-    return true
-  }
-  return false
 }
