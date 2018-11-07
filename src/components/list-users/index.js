@@ -4,12 +4,13 @@ import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { Icon } from 'react-icons-kit'
-import {search} from 'react-icons-kit/fa/search'
+import {search, chevronLeft} from 'react-icons-kit/fa'
 import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
 import {User} from '../../components'
 import _ from 'lodash'
 import {compareDateReverse} from '../../services/utils.services'
+import logo from '../../images/logoNav2.png'
 
 const mapDispatchToProps = (dispatch) => {
   return{
@@ -30,7 +31,6 @@ const mapStateToProps = (state) => {
     let myInfo = temp.find((item) => {  //Get my info
       return uid === item.UID
     })
-    // console.log(myInfo);
     let stars = []
     if(myInfo && myInfo.stars && myInfo.stars.length){  //Get my star users
       stars = myInfo.stars
@@ -103,7 +103,9 @@ const mapStateToProps = (state) => {
 
 class ListUsers extends Component {
   static propTypes = {
-    listUsers: PropTypes.array
+    listUsers: PropTypes.array,
+    showSidebar: PropTypes.bool,
+    toggleSidebar: PropTypes.func
   }
 
   constructor(props){
@@ -125,6 +127,10 @@ class ListUsers extends Component {
     })
   }
 
+  handleToggleSidebar(){
+    this.props.toggleSidebar && this.props.toggleSidebar()
+  }
+
   render() {
     let {listUsers} = this.props
     let filteredListUsers = []
@@ -140,8 +146,12 @@ class ListUsers extends Component {
     }
     return (
       <div className={styles.userListComponent}>
-        <div className="people-list" id="people-list">
+        <div className={this.props.showSidebar ? "people-list show" : "people-list"} id="people-list">
           <div className="search">
+            <span className="logo-mobile">
+              <button className="btn btn-toggle" onClick={this.handleToggleSidebar.bind(this)}><Icon icon={chevronLeft} size={22} style={{color: '#444753'}} /></button>
+              <span><img src={logo} alt="logo" /></span>
+            </span>
             <input type="text" placeholder="search" onChange={this.handleChange.bind(this)} value={this.state.name}/>
             <Icon icon={search} size={16} style={{color: 'white', position: 'relative', top: '-2px'}} className="fa-search"/>
             <button className="btn btn-reset" onClick={this.handleReset.bind(this)}>RESET</button>

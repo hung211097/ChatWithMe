@@ -5,17 +5,14 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { logout, sendMessage } from '../../actions'
 import { Icon } from 'react-icons-kit'
-import {signOut} from 'react-icons-kit/fa/signOut'
-import {info} from 'react-icons-kit/fa/info'
-import {fileImageO} from 'react-icons-kit/fa/fileImageO'
-import {fileO} from 'react-icons-kit/fa/fileO'
+import {signOut, info, fileImageO, fileO, send, bars} from 'react-icons-kit/fa'
 import logo from '../../images/logoNav2.png'
 import defaulAvatar from '../../images/default-avatar.png'
 import {ClickOutside, SlickLightbox} from '../../components'
 import {withFirestore} from 'react-redux-firebase'
 import {compose} from 'redux'
 import _ from 'lodash'
-import {connectStringID, formatDate} from '../../services/utils.services'
+import {connectStringID, formatDate, transferToImage} from '../../services/utils.services'
 import ReactTooltip from 'react-tooltip'
 
 const mapDispatchToProps = (dispatch) => {
@@ -50,6 +47,7 @@ const mapStateToProps = (state) => {
 class ChatBox extends Component {
   static propTypes = {
     profile: PropTypes.object,
+    toggleSidebar: PropTypes.func
   }
 
   constructor(props){
@@ -106,13 +104,16 @@ class ChatBox extends Component {
   }
 
   handleOnSubmit(){
-    this.props.sendMessage(
-      {messages: this.state.messages, content: this.state.content, files: this.state.files, infoUser: this.props.infoUser},
-      () => {this.scrollToBottom()}
-    )
-    this.setState({
-      files: []
-    })
+    if((this.state.content || this.state.files.length) && this.props.match.params && this.props.match.params.id){
+      this.props.sendMessage(
+        {messages: this.state.messages, content: transferToImage(this.state.content), files: this.state.files, infoUser: this.props.infoUser},
+        () => {this.scrollToBottom()}
+      )
+      this.setState({
+        files: [],
+        content: ''
+      })
+    }
   }
 
   handleKeyPress(event){
@@ -156,6 +157,16 @@ class ChatBox extends Component {
     })
   }
 
+  handleModelChange(model) {
+    this.setState({
+      content: model
+    });
+  }
+
+  handleShowSidebar(){
+    this.props.toggleSidebar && this.props.toggleSidebar()
+  }
+
   render() {
     // console.log(this.state);
     const {profile} = this.props
@@ -167,6 +178,9 @@ class ChatBox extends Component {
           <div className="chat-header clearfix">
             <div className="logo">
               <img src={logo} alt="logo" />
+              <button type="button" className="btn btn-toggle d-sm-none d-block" onClick={this.handleShowSidebar.bind(this)}>
+                <span><Icon icon={bars} size={22} style={{color: '#4EBDEB', position: 'relative', top: '-2px'}}/></span>
+              </button>
             </div>
             <div className="current-user" onClick={this.handleShowDropdown.bind(this)}>
               <h3>{display_name}</h3>
@@ -221,15 +235,9 @@ class ChatBox extends Component {
                       </div>
                       <div className={uid === item.belongTo ? "message my-message float-right" : "message other-message"}>
                         {item.content ?
-                          <p>{item.content}</p>
+                          <p dangerouslySetInnerHTML={{ __html: item.content }}></p>
                           : null
                         }
-                        {/*{item.images && !!item.images.length && item.images.map((img, key) => {
-                            return(
-                              <img src={img} alt="message-img" />
-                            )
-                          })
-                        }*/}
                         {item.images && !!item.images.length && item.images.length > 1 &&
                           <SlickLightbox images={item.images} />
                         }
@@ -258,6 +266,11 @@ class ChatBox extends Component {
                   <Icon icon={fileImageO} size={18} /> &nbsp;&nbsp;&nbsp;
                   <input id="image-upload" type="file" multiple accept="image/*" onChange={this.handleOnSelectFile.bind(this)} style={{display: "none"}}/>
                 </label>
+                <span className="d-sm-none d-block">
+                  <button type="button" className="btn-send" onClick={this.handleOnSubmit.bind(this)}>
+                    <Icon icon={send} size={24} style={{background: 'transparent !important', color: '#4EBDEB'}}/>
+                  </button>
+                </span>
                 <div className="image-box">
                   <div className="preview-box">
                     {this.state.files && this.state.files.map((item, key) => {
@@ -273,7 +286,9 @@ class ChatBox extends Component {
                     }
                   </div>
                 </div>
-                <button type="button" onClick={this.handleOnSubmit.bind(this)}>Gửi</button>
+                <button type="button" className="btn-send d-sm-block d-none" onClick={this.handleOnSubmit.bind(this)}>
+                  <Icon icon={send} size={24} style={{background: 'transparent !important', color: '#4EBDEB'}}/>
+                </button>
               </span>
             </form>
           </div>

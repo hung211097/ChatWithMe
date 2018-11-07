@@ -23,7 +23,8 @@ class Home extends Component {
   constructor(props){
     super(props)
     this.state = {
-      showDropdown: false
+      showDropdown: false,
+      showSidebar: false
     }
   }
 
@@ -38,12 +39,19 @@ class Home extends Component {
     }
   }
 
+  handleToggleSidebar(){
+    this.setState({
+      showSidebar: !this.state.showSidebar
+    })
+  }
+
   render() {
+    console.log(this.state);
     return (
       <div className={styles.homePage}>
         <div className="container-app clearfix">
-          <UsersList />
-          <ChatBox />
+          <UsersList showSidebar={this.state.showSidebar} toggleSidebar={this.handleToggleSidebar.bind(this)}/>
+          <ChatBox toggleSidebar={this.handleToggleSidebar.bind(this)}/>
         </div>
         {/* end container */}
       </div>
