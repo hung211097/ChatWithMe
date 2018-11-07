@@ -106,8 +106,9 @@ class ChatBox extends Component {
 
   handleOnSubmit(){
     if((this.state.content || this.state.files.length) && this.props.match.params && this.props.match.params.id){
+      let sendmessage = this.state.content.replace(/(\r\n|\n)/g, '<br/>')
       this.props.sendMessage(
-        {messages: this.state.messages, content: transferToImage(this.state.content), files: this.state.files, infoUser: this.props.infoUser},
+        {messages: this.state.messages, content: transferToImage(sendmessage), files: this.state.files, infoUser: this.props.infoUser},
         () => {this.scrollToBottom()}
       )
       this.setState({
@@ -120,13 +121,8 @@ class ChatBox extends Component {
   handleKeyPress(event){
     if(event.key === 'Enter' && !event.altKey && this.props.match.params && this.props.match.params.id){
       event.preventDefault();
-      let temp = event.target.value
       event.target.value = ""
-      this.setState({
-        content: temp
-      }, () => {
-        this.handleOnSubmit()
-      })
+      this.handleOnSubmit()
     } else if (event.key === 'Enter' && !event.altKey && this.props.match && !this.props.match.params.id){
       event.preventDefault();
       event.target.value = ""
@@ -158,9 +154,9 @@ class ChatBox extends Component {
     })
   }
 
-  handleModelChange(model) {
+  handleContentChange(e) {
     this.setState({
-      content: model
+      content: e.target.value
     });
   }
 
@@ -169,7 +165,6 @@ class ChatBox extends Component {
   }
 
   render() {
-    // console.log(this.state);
     const {profile} = this.props
     const uid = profile.uid ? profile.uid : profile.UID
     const display_name = profile.display_name ? profile.display_name : profile.displayName
@@ -258,7 +253,7 @@ class ChatBox extends Component {
           <div className="chat-message clearfix">
             <form onSubmit={this.handleOnSubmit.bind(this)}>
               <textarea name="message-to-send" id="message-to-send" placeholder="Nhập tin nhắn" rows={3}
-                defaultValue="" onKeyPress={this.handleKeyPress.bind(this)}/>
+                value={this.state.content} onKeyPress={this.handleKeyPress.bind(this)} onChange={this.handleContentChange.bind(this)}/>
               <span className="media">
                 <span className="file">
                   <Icon icon={fileO} size={18} />
