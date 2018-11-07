@@ -46,12 +46,11 @@ class Home extends Component {
   }
 
   render() {
-    console.log(this.state);
     return (
       <div className={styles.homePage}>
         <div className="container-app clearfix">
           <UsersList showSidebar={this.state.showSidebar} toggleSidebar={this.handleToggleSidebar.bind(this)}/>
-          <ChatBox toggleSidebar={this.handleToggleSidebar.bind(this)}/>
+          <ChatBox showSidebar={this.state.showSidebar} toggleSidebar={this.handleToggleSidebar.bind(this)}/>
         </div>
         {/* end container */}
       </div>
