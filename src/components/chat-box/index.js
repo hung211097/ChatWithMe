@@ -65,6 +65,7 @@ class ChatBox extends Component {
   }
 
   componentDidMount(){
+    document.getElementById('message-to-send').autofocus= true
     const {dataChat} = this.props
     if(this.props.match.params && this.props.match.params.id){
       this.setState({
@@ -128,7 +129,16 @@ class ChatBox extends Component {
       event.target.value = ""
     }
     else if(event.key === 'Enter' && event.altKey){
-      event.target.value += "\n"
+      let textarea = event.target
+      let pos = textarea.selectionStart
+      let first = textarea.value.substring(0, pos) + "\n"
+      let rest = textarea.value.substring(pos)
+      this.setState({
+        content: first + rest
+      }, () => {
+        textarea.selectionStart = pos + 1
+        textarea.selectionEnd = pos + 1
+      })
     }
   }
 
