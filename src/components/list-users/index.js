@@ -136,7 +136,7 @@ class ListUsers extends Component {
     let filteredListUsers = []
     if(this.state.name){
       listUsers.forEach((item) => {
-        if(item.display_name.search(this.state.name) >= 0){
+        if(item.display_name.toLowerCase().search(this.state.name.toLowerCase()) >= 0){
           filteredListUsers.push(item)
         }
       })
@@ -148,7 +148,7 @@ class ListUsers extends Component {
       <div className={styles.userListComponent}>
         <div className={this.props.showSidebar ? "people-list show" : "people-list"} id="people-list">
           <div className="search">
-            <span className="logo-mobile">
+            <span className="logo-mobile d-sm-none d-block">
               <button className="btn btn-toggle" onClick={this.handleToggleSidebar.bind(this)}><Icon icon={chevronLeft} size={22} style={{color: '#444753'}} /></button>
               <span><img src={logo} alt="logo" /></span>
             </span>
